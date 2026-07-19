@@ -1,3 +1,4 @@
+import 'package:backtotrack/data/api_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/custom_text_filed.dart';
@@ -50,9 +51,33 @@ class ForgotPasswordScreen extends StatelessWidget {
                     icon: Icons.email_outlined,
                   ),
                   const SizedBox(height: 25),
+                  // Inside forgot_password_screen.dart
+
                   PrimaryButton(
                     text: 'Send Reset Link',
-                    onPressed: () => Navigator.pushNamed(context, '/check-email'),
+                    onPressed: () async {
+                      var result = await ApiManager.forgotPassword(emailController.text);
+                      if (emailController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Please Enter Your Email',
+                              style: GoogleFonts.poppins(color: Colors.white),
+                            ),
+                            backgroundColor: Color(0xFF2353D0),
+                          ),
+                        );
+                        return;
+                      }
+
+                      if (result['success']) {
+                        Navigator.pushNamed(context, '/check-email',arguments: emailController.text);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(result['message']), backgroundColor: Color(0xFF2353D0)),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),

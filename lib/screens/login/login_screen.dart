@@ -1,3 +1,4 @@
+import 'package:backtotrack/data/api_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/custom_text_filed.dart';
@@ -36,7 +37,9 @@ class LoginScreen extends StatelessWidget {
             const AuthHeader(
               icon: Icons.person_outline,
               title: 'Welcome Back',
-              subtitle: 'Sign in to access your employee dashboard and account details.', boxColor: Color(0xFF00C1A3),
+              subtitle:
+                  'Sign in to access your employee dashboard and account details.',
+              boxColor: Color(0xFF00C1A3),
             ),
 
             const SizedBox(height: 35),
@@ -53,7 +56,7 @@ class LoginScreen extends StatelessWidget {
                     color: Colors.black.withOpacity(0.03),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
-                  )
+                  ),
                 ],
               ),
               child: Column(
@@ -81,15 +84,75 @@ class LoginScreen extends StatelessWidget {
                       },
                       child: Text(
                         'Forgot Password?',
-                        style: GoogleFonts.poppins(color: Color(0xFF2353D0), fontWeight: FontWeight.w600, fontSize: 13),
+                        style: GoogleFonts.poppins(
+                          color: Color(0xFF2353D0),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 10),
+
+                  // Inside login_screen.dart -> PrimaryButton onPressed
                   PrimaryButton(
                     text: 'Sign In',
-                    onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+                    onPressed: () async {
+                      // 1. Basic validation
+                      if (userController.text.isEmpty ||
+                          passController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Please fill all fields',
+                              style: GoogleFonts.poppins(color: Colors.white),
+                            ),
+                            backgroundColor: Color(0xFF2353D0),
+                          ),
+                        );
+                        return;
+                      }
+
+                      // 2. Show Loading (Optional but recommended)
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder:
+                            (context) => const Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF2353D0),
+                              ),
+                            ),
+                      );
+
+                      // 3. Call API
+                      var result = await ApiManager.login(
+                        userController.text,
+                        passController.text,
+                      );
+
+                      Navigator.pop(context); // Close loading dialog
+
+                      if (result['success']) {
+                        // Navigate to Home
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home',
+                          (route) => false,
+                        );
+                      } else {
+                        // 4. Show Error SnackBar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              result['message'],
+                              style: GoogleFonts.poppins(color: Colors.white),
+                            ),
+                            backgroundColor: Color(0xFF2353D0),
+                            behavior: SnackBarBehavior.fixed,
+                          ),
+                        );
+                      }
                     },
                   ),
                 ],
@@ -101,19 +164,21 @@ class LoginScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Don't have an account? ",
-                    style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13)),
+                Text(
+                  "Don't have an account? ",
+                  style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+                ),
                 GestureDetector(
                   onTap: () {
-
                     Navigator.pushNamed(context, '/signup');
                   },
                   child: Text(
                     "Create Account",
                     style: GoogleFonts.poppins(
-                        color: Color(0xFF2353D0),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13),
+                      color: Color(0xFF2353D0),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],
