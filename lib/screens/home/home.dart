@@ -77,24 +77,11 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 25),
-            const SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  LeaveSummaryCard(title: 'Annual', value: '13', total: '21', color: Color(0xFF2353D0)),
-                  SizedBox(width: 15),
-                  LeaveSummaryCard(title: 'Sick', value: '8', total: '10', color: Color(0xFFEF4444)),
-                  SizedBox(width: 15),
-                  LeaveSummaryCard(title: 'Personal', value: '4', total: '5', color: Color(0xFFF59E0B)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('2 requests found', style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13)),
-                Container(
+               /* Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
                   child: Row(
@@ -103,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                       Text(' Filter', style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
                     ],
                   ),
-                )
+                )*/
               ],
             ),
             const SizedBox(height: 20),

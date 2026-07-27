@@ -9,12 +9,20 @@ class EmployeeResponse {
       this.data,});
 
   EmployeeResponse.fromJson(dynamic json) {
-    transactionId = json['transactionId'];
-    timestamp = json['timestamp'];
-    status = json['status'];
-    message = json['message'];
-    data = json['data'] != null ? EmployeeData.fromJson(json['data']) : null;
+    if (json is Map<String, dynamic> || json is Map) {
+      transactionId = json['transactionId']?.toString();
+      timestamp = json['timestamp']?.toString();
+      status = json['status']?.toString();
+      message = json['message']?.toString() ?? json['error']?.toString();
+      
+      if (json['data'] != null) {
+        data = EmployeeData.fromJson(json['data']);
+      } else if (json['id'] != null || json['empCode'] != null || json['name'] != null || json['nid'] != null) {
+        data = EmployeeData.fromJson(json);
+      }
+    }
   }
+
   String? transactionId;
   String? timestamp;
   String? status;
@@ -32,5 +40,4 @@ class EmployeeResponse {
     }
     return map;
   }
-
-}
+}
