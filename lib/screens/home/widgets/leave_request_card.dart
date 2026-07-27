@@ -24,7 +24,7 @@ class LeaveRequestCard extends StatefulWidget {
 }
 
 class _LeaveRequestCardState extends State<LeaveRequestCard> {
-  bool _isExpanded = false; // State to track expansion
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Section (Always Visible)
             Row(
               children: [
                 Container(
@@ -92,7 +91,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
             ),
             const SizedBox(height: 10),
 
-            // Toggle Button (View/Hide details)
             GestureDetector(
               onTap: () => setState(() => _isExpanded = !_isExpanded),
               child: Row(
@@ -114,14 +112,12 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
               ),
             ),
 
-            // Expanded Section
             if (_isExpanded) ...[
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 child: Divider(color: Color(0xFFF1F5F9)),
               ),
 
-              // Attachments Section
               _buildSectionTitle('ATTACHMENTS'),
               const SizedBox(height: 8),
               Row(
@@ -137,13 +133,11 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
 
               const SizedBox(height: 20),
 
-              // Workflow Status Section
               _buildSectionTitle('APPROVAL WORKFLOW STATUS'),
               const SizedBox(height: 15),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Status Icon with vertical line
                   Column(
                     children: [
                       Container(
@@ -161,7 +155,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     ],
                   ),
                   const SizedBox(width: 15),
-                  // Manager Details
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +169,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        // Small Inner Status Chip
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
@@ -206,7 +198,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
     );
   }
 
-  // Helper for small grey labels
   Widget _buildSectionTitle(String title) {
     return Text(
       title,

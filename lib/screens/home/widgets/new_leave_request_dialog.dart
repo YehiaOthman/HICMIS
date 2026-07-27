@@ -7,12 +7,11 @@ class NewLeaveRequestDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      // 1. Fixing the background and removing the weird purple tint
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      child: ClipRRect( // Ensures the scrollable content doesn't overflow the rounded corners
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
         child: Container(
           width: double.infinity,
@@ -20,7 +19,6 @@ class NewLeaveRequestDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // HEADER
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -50,20 +48,19 @@ class NewLeaveRequestDialog extends StatelessWidget {
                 child: Divider(color: Color(0xFFF1F5F9), thickness: 1),
               ),
 
-              // 2. STYLED SCROLLBAR (The "Slide Menu" fix)
               Flexible(
                 child: Theme(
                   data: Theme.of(context).copyWith(
                     scrollbarTheme: ScrollbarThemeData(
                       thumbColor: MaterialStateProperty.all(const Color(0xFFCBD5E1)),
                       thickness: MaterialStateProperty.all(6),
-                      radius: const Radius.circular(10), // Rounded scrollbar
+                      radius: const Radius.circular(10),
                     ),
                   ),
                   child: Scrollbar(
-                    thumbVisibility: true, // Makes the scrollbar always visible while scrolling
+                    thumbVisibility: true,
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(right: 15), // Space for the scrollbar
+                      padding: const EdgeInsets.only(right: 15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -109,13 +106,10 @@ class NewLeaveRequestDialog extends StatelessWidget {
 
               const SizedBox(height: 25),
 
-              // ACTION BUTTONS
-          // ACTION BUTTONS
           Container(
             padding: const EdgeInsets.only(top: 20),
             child: Row(
               children: [
-                // Secondary Button (Cancel)
                 Expanded(
                   child: _buildButton(
                     label: 'Cancel',
@@ -124,14 +118,11 @@ class NewLeaveRequestDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Primary Button (Submit)
                 Expanded(
                   child: _buildButton(
                     label: 'Submit Request',
                     isPrimary: true,
-                    onTap: () {
-                      // Your submit logic
-                    },
+                    onTap: () {},
                   ),
                 ),
               ],
@@ -143,8 +134,6 @@ class NewLeaveRequestDialog extends StatelessWidget {
       ),
     );
   }
-
-  // --- REUSABLE BUILDERS ---
 
   Widget _buildLabel(String text) {
     return Text(
@@ -282,22 +271,20 @@ class NewLeaveRequestDialog extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return SizedBox(
-      height: 54, // Consistent height
+      height: 54,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
-          // Primary is Blue, Secondary is a very light grey
           backgroundColor: isPrimary ? const Color(0xFF2353D0) : const Color(0xFFF1F5F9),
-          // Text color: White for primary, Dark Blue-Grey for secondary
           foregroundColor: isPrimary ? Colors.white : const Color(0xFF475569),
           elevation: 0,
           shadowColor: Colors.transparent,
-          padding: EdgeInsets.zero, // Removes hidden padding that shifts text
+          padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        child: Center( // Explicitly forces label to the center
+        child: Center(
           child: Text(
             label,
             textAlign: TextAlign.center,

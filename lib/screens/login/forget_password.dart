@@ -30,7 +30,7 @@ class ForgotPasswordScreen extends StatelessWidget {
             const SizedBox(height: 40),
             const AuthHeader(
               icon: Icons.lock_outline,
-              boxColor: Color(0xFFFFB800), // Yellow/Orange color from image
+              boxColor: Color(0xFFFFB800),
               title: 'Reset Password',
               subtitle: 'Enter the email address linked to your account. We will send you a reset link.',
             ),
@@ -51,7 +51,6 @@ class ForgotPasswordScreen extends StatelessWidget {
                     icon: Icons.email_outlined,
                   ),
                   const SizedBox(height: 25),
-                  // Inside forgot_password_screen.dart
 
                   PrimaryButton(
                     text: 'Send Reset Link',

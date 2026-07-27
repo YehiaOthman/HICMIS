@@ -8,7 +8,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate width for 2 columns with padding
     double columnWidth = (MediaQuery.of(context).size.width - 80) / 2;
 
     return Scaffold(
@@ -32,13 +31,11 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 1. Description Header (Pure White Section)
 
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  // 2. User Summary Section
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -52,7 +49,6 @@ class ProfileScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Wrap prevents name and status chip from overlapping
                             Wrap(
                               crossAxisAlignment: WrapCrossAlignment.center,
                               spacing: 10,
@@ -74,7 +70,6 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
 
-                  // 3. Personal Information Card (Using Wrap to prevent overflow)
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -118,7 +113,6 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  // 4. Education History
                   HistoryCard(
                     icon: Icons.school_outlined,
                     title: 'Education History',
@@ -137,7 +131,6 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
 
-                  // 5. Position History
                   HistoryCard(
                     icon: Icons.work_outline,
                     title: 'Position History',

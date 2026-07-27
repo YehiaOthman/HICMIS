@@ -33,7 +33,7 @@ class _CustomPasswordTextFiledState extends State<CustomPasswordTextFiled> {
           widget.label.toUpperCase(),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF94A3B8), // Gray label color
+            color: const Color(0xFF94A3B8),
             fontSize: 11,
             letterSpacing: 1.1,
           ),
@@ -46,7 +46,7 @@ class _CustomPasswordTextFiledState extends State<CustomPasswordTextFiled> {
           style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xFFF8FAFC), // Light grey fill
+            fillColor: const Color(0xFFF8FAFC),
             prefixIcon: Icon(widget.icon, color: Colors.grey.withOpacity(0.5), size: 20),
             suffixIcon: IconButton(
               icon: Icon(

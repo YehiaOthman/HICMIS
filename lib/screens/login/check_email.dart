@@ -26,7 +26,6 @@ class CheckEmailScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 50),
-            // Custom Circular Icon with Checkmark
             Center(
               child: Stack(
                 alignment: Alignment.bottomRight,
@@ -58,7 +57,6 @@ class CheckEmailScreen extends StatelessWidget {
               style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[500]),
             ),
             const SizedBox(height: 40),
-            // Info Box
             Container(
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),

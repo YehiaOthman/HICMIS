@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:backtotrack/providers/auth_provider.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -8,7 +10,7 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Colors.white,
-      surfaceTintColor: Colors.transparent, // Prevents grey tint
+      surfaceTintColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topRight: Radius.circular(30), bottomRight: Radius.circular(30)),
       ),
@@ -38,21 +40,20 @@ class AppDrawer extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // --- UPDATED ITEMS ---
           _drawerItem(
             icon: Icons.person_outline,
             label: "My Profile",
             isActive: false,
             onTap: () {
-              Navigator.pop(context); // Close the drawer first
-              Navigator.pushNamed(context, '/profile'); // Go to profile
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/profile');
             },
           ),
           _drawerItem(
             icon: Icons.calendar_today_outlined,
             label: "Leaves & Absences",
             isActive: true,
-            onTap: () => Navigator.pop(context), // Already here, just close
+            onTap: () => Navigator.pop(context),
           ),
           _drawerItem(
             icon: Icons.description_outlined,
@@ -60,12 +61,24 @@ class AppDrawer extends StatelessWidget {
             isActive: false,
             onTap: () {},
           ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: _drawerItem(
+              icon: Icons.logout,
+              label: "Logout",
+              isActive: false,
+              onTap: () {
+                Navigator.pop(context);
+                _showLogoutDialog(context);
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  // Updated helper to include onTap
   Widget _drawerItem({
     required IconData icon,
     required String label,
@@ -89,6 +102,46 @@ class AppDrawer extends StatelessWidget {
             fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
           ),
         ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Logout',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Are you sure you want to logout?',
+          style: GoogleFonts.poppins(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.poppins(color: const Color(0xFF64748B)),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await context.read<AuthProvider>().logout();
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/',
+                (route) => false,
+              );
+            },
+            child: Text(
+              'Logout',
+              style: GoogleFonts.poppins(color: const Color(0xFF2353D0)),
+            ),
+          ),
+        ],
       ),
     );
   }

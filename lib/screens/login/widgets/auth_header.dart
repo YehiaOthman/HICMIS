@@ -27,7 +27,6 @@ class AuthHeader extends StatelessWidget {
           child: Icon(icon, color: Colors.white, size: 40),
         ),
         const SizedBox(height: 25),
-        // Title text
         Text(
           title,
           style: GoogleFonts.poppins(
@@ -37,7 +36,6 @@ class AuthHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        // Subtitle text
         Text(
           subtitle,
           textAlign: TextAlign.center,
