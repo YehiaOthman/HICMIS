@@ -32,46 +32,6 @@ class LoginScreen extends StatelessWidget {
       ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
-          if (authProvider.isLoading) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => const Center(
-                  child: CircularProgressIndicator(
-                    color: Color(0xFF2353D0),
-                  ),
-                ),
-              );
-            });
-          }
-
-          if (authProvider.status == AuthStatus.error && authProvider.errorMessage != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    authProvider.errorMessage!,
-                    style: GoogleFonts.poppins(color: Colors.white),
-                  ),
-                  backgroundColor: Color(0xFF2353D0),
-                  behavior: SnackBarBehavior.fixed,
-                ),
-              );
-              authProvider.clearError();
-            });
-          }
-
-          if (authProvider.isAuthenticated) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/home',
-                (route) => false,
-              );
-            });
-          }
-
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Column(
@@ -127,7 +87,7 @@ class LoginScreen extends StatelessWidget {
                           child: Text(
                             'Forgot Password?',
                             style: GoogleFonts.poppins(
-                              color: Color(0xFF2353D0),
+                              color: const Color(0xFF2353D0),
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
                             ),
@@ -138,30 +98,52 @@ class LoginScreen extends StatelessWidget {
 
                       PrimaryButton(
                         text: 'Sign In',
+                        isLoading: authProvider.isLoading,
                         onPressed: () async {
-                          if (userController.text.isEmpty ||
-                              passController.text.isEmpty) {
+                          if (userController.text.trim().isEmpty ||
+                              passController.text.trim().isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
                                   'Please fill all fields',
                                   style: GoogleFonts.poppins(color: Colors.white),
                                 ),
-                                backgroundColor: Color(0xFF2353D0),
+                                backgroundColor: const Color(0xFF2353D0),
                               ),
                             );
                             return;
                           }
 
-                          await authProvider.login(
-                            userController.text,
-                            passController.text,
+                          final success = await authProvider.login(
+                            userController.text.trim(),
+                            passController.text.trim(),
                           );
+
+                          if (context.mounted) {
+                            if (success) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/home',
+                                (route) => false,
+                              );
+                            } else if (authProvider.errorMessage != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    authProvider.errorMessage!,
+                                    style: GoogleFonts.poppins(color: Colors.white),
+                                  ),
+                                  backgroundColor: const Color(0xFF2353D0),
+                                ),
+                              );
+                            }
+                          }
                         },
                       ),
                     ],
                   ),
                 ),
+
 
                 const SizedBox(height: 35),
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:backtotrack/data/models/employee_response.dart';
 import 'package:backtotrack/data/models/education_history.dart';
 import 'package:backtotrack/data/models/position_history.dart';
+import 'package:backtotrack/data/models/absence_request.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -13,6 +14,7 @@ class ApiManager {
   static const String refreshPath = '/api/auth/refresh';
   static const String forgotPasswordPath = '/api/auth/forgot-password';
   static const String profilePath = '/api/employees/me';
+  static const String absenceRequestsPath = '/api/absence-requests';
 
   static String? _extractToken(dynamic data) {
     if (data == null) return null;
@@ -296,5 +298,199 @@ class ApiManager {
       return [];
     }
   }
+
+  // --- ABSENCE REQUESTS ENDPOINTS ---
+
+  static Future<Map<String, dynamic>> createAbsenceRequest({
+    required String absenceType,
+    required String startDate,
+    required String endDate,
+    required String reason,
+    num? employeeId,
+  }) async {
+    Uri url = Uri.https(baseUrl, absenceRequestsPath);
+    String? token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      return {'success': false, 'message': 'No authentication token found'};
+    }
+
+    // Map UI absence types to API format
+    Map<String, String> absenceTypeMap = {
+      'Annual Leave': 'ANNUAL_LEAVE',
+      'Sick Leave': 'SICK_LEAVE',
+      'Personal Leave': 'PERSONAL_LEAVE',
+      'Unpaid Leave': 'UNPAID_LEAVE',
+      'Maternity/Paternity Leave': 'MATERNITY_PATERNITY_LEAVE',
+    };
+
+    String apiAbsenceType = absenceTypeMap[absenceType] ?? 'ANNUAL_LEAVE';
+
+    Map<String, dynamic> body = {
+      'absenceType': 'ANNUAL_LEAVE',
+      'startDate': startDate,
+      'endDate': endDate,
+      'reason': reason,
+    };
+
+    print('Creating absence request with body: ${jsonEncode(body)}');
+    print('URL: $url');
+
+    try {
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode(body),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          String? newToken = await getAccessToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            response = await http.post(
+              url,
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer $newToken",
+              },
+              body: jsonEncode(body),
+            );
+          }
+        }
+      }
+
+      dynamic data;
+      try {
+        data = jsonDecode(response.body);
+      } catch (_) {
+        data = {};
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return {'success': true, 'message': 'Leave request created successfully', 'data': data};
+      } else {
+        String msg = data is Map ? (data['message'] ?? data['error'] ?? 'Failed to submit leave request') : 'Failed to submit leave request (${response.statusCode})';
+        return {'success': false, 'message': msg};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Connection error: $e'};
+    }
+  }
+
+  static Future<List<AbsenceRequest>> getMyAbsenceRequests() async {
+    Uri url = Uri.https(baseUrl, '$absenceRequestsPath/me');
+    String? token = await getAccessToken();
+
+    if (token == null || token.isEmpty) return [];
+
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          String? newToken = await getAccessToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            response = await http.get(
+              url,
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer $newToken",
+              },
+            );
+          }
+        }
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = jsonDecode(response.body);
+        List rawList = [];
+        if (data is List) {
+          rawList = data;
+        } else if (data is Map && data['data'] is List) {
+          rawList = data['data'];
+        }
+        return rawList.map((item) => AbsenceRequest.fromJson(item)).toList();
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteAbsenceRequest(num id) async {
+    Uri url = Uri.https(baseUrl, '$absenceRequestsPath/$id');
+    String? token = await getAccessToken();
+
+    print('Deleting absence request with ID: $id');
+    print('URL: $url');
+
+    if (token == null || token.isEmpty) {
+      return {'success': false, 'message': 'No authentication token found'};
+    }
+
+    try {
+      var response = await http.delete(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          String? newToken = await getAccessToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            response = await http.delete(
+              url,
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer $newToken",
+              },
+            );
+          }
+        }
+      }
+
+      dynamic data;
+      try {
+        data = jsonDecode(response.body);
+      } catch (_) {
+        data = {};
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return {'success': true, 'message': 'Leave request deleted successfully'};
+      } else {
+        String msg = data is Map ? (data['message'] ?? data['error'] ?? 'Failed to delete request') : 'Failed to delete request (${response.statusCode})';
+        // Provide more specific error message for status-related issues
+        if (msg.contains('status') || msg.contains('state')) {
+          msg = 'Cannot delete request - it may already be processed. Only pending requests can be deleted.';
+        }
+        return {'success': false, 'message': msg};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Connection error: $e'};
+    }
+  }
 }
-
+
+

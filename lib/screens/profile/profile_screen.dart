@@ -120,12 +120,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         data?.name ?? 'Employee',
                                         style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
                                       ),
-                                      _buildStatusChip('ACTIVE ACCOUNT', const Color(0xFF2353D0)),
+                                      _buildStatusChip('ACTIVE ACCOUNT', Colors.green),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
-                                  _buildRoleChip(data?.position ?? 'EMPLOYEE'),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 4),
+                                  _buildStatusChip(data?.position ?? 'EMPLOYEE',Color(0xFF2353D0)),
+                                  const SizedBox(height: 4),
                                   Text(
                                     authProvider.username != null ? '${authProvider.username}@xtra.com' : 'employee@xtra.com',
                                     style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF64748B)),
@@ -135,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )
                           ],
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 15),
 
                         Container(
                           width: double.infinity,
@@ -350,21 +350,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        border: Border.all(color: color.withOpacity(0.5)),
-        borderRadius: BorderRadius.circular(4),
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(text, style: GoogleFonts.poppins(color: color, fontSize: 9, fontWeight: FontWeight.bold)),
+      child: Padding(
+        padding: const EdgeInsets.all(2),
+        child: Text(text, style: GoogleFonts.poppins(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+      ),
     );
   }
 
-  Widget _buildRoleChip(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: const Color(0xFF00C1A3),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(text, style: GoogleFonts.poppins(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
-    );
-  }
+  // Widget _buildRoleChip(String text) {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  //     decoration: BoxDecoration(
+  //       color: const Color(0xFF00C1A3),
+  //       borderRadius: BorderRadius.circular(4),
+  //     ),
+  //     child: Text(text, style: GoogleFonts.poppins(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+  //   );
+  // }
 }

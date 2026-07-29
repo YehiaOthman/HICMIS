@@ -1,8 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:backtotrack/providers/auth_provider.dart';
 
-class NewLeaveRequestDialog extends StatelessWidget {
+class NewLeaveRequestDialog extends StatefulWidget {
   const NewLeaveRequestDialog({super.key});
+
+  @override
+  State<NewLeaveRequestDialog> createState() => _NewLeaveRequestDialogState();
+}
+
+class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
+  String _absenceType = 'Annual Leave';
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now();
+  final TextEditingController _reasonController = TextEditingController();
+  bool _isSubmitting = false;
+
+  final List<String> _absenceTypes = [
+    'Annual Leave',
+    'Sick Leave',
+    'Personal Leave',
+    'Unpaid Leave',
+    'Maternity/Paternity Leave',
+  ];
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
+  int get _durationDays {
+    final diff = _endDate.difference(_startDate).inDays;
+    return diff < 0 ? 0 : diff + 1;
+  }
+
+  Future<void> _selectDate(BuildContext context, bool isStart) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: isStart ? _startDate : _endDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF2353D0),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        if (isStart) {
+          _startDate = picked;
+          if (_endDate.isBefore(_startDate)) {
+            _endDate = _startDate;
+          }
+        } else {
+          _endDate = picked;
+          if (_endDate.isBefore(_startDate)) {
+            _startDate = _endDate;
+          }
+        }
+      });
+    }
+  }
+
+  String _formatDate(DateTime dt) {
+    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> _submitRequest() async {
+    if (_reasonController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter a reason for your leave request.', style: GoogleFonts.poppins()),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final result = await authProvider.createAbsenceRequest(
+      absenceType: _absenceType,
+      startDate: _formatDate(_startDate),
+      endDate: _formatDate(_endDate),
+      reason: _reasonController.text.trim(),
+    );
+
+    setState(() => _isSubmitting = false);
+
+    if (mounted) {
+      if (result['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Leave request submitted successfully!', style: GoogleFonts.poppins()),
+            backgroundColor: const Color(0xFF22C55E),
+          ),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result['message'] ?? 'Failed to submit leave request.', style: GoogleFonts.poppins()),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,85 +165,79 @@ class NewLeaveRequestDialog extends StatelessWidget {
               ),
 
               Flexible(
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    scrollbarTheme: ScrollbarThemeData(
-                      thumbColor: MaterialStateProperty.all(const Color(0xFFCBD5E1)),
-                      thickness: MaterialStateProperty.all(6),
-                      radius: const Radius.circular(10),
-                    ),
-                  ),
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.only(right: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildLabel('ABSENCE TYPE'),
+                      const SizedBox(height: 8),
+                      _buildDropdown(),
+
+                      const SizedBox(height: 20),
+
+                      Row(
                         children: [
-                          _buildLabel('ABSENCE TYPE'),
-                          const SizedBox(height: 8),
-                          _buildDropdown(),
-
-                          const SizedBox(height: 20),
-
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildFieldGroup('START DATE', '07/17/2026'),
-                              ),
-                              const SizedBox(width: 15),
-                              Expanded(
-                                child: _buildFieldGroup('END DATE', '07/17/2026'),
-                              ),
-                            ],
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _selectDate(context, true),
+                              child: _buildFieldGroup('START DATE', _formatDate(_startDate)),
+                            ),
                           ),
-
-                          const SizedBox(height: 20),
-
-                          _buildDurationRow(),
-
-                          const SizedBox(height: 25),
-
-                          _buildLabel('REASON'),
-                          const SizedBox(height: 8),
-                          _buildMultilineField('Please explain the reason for your leave...'),
-
-                          const SizedBox(height: 25),
-
-                          _buildLabel('ATTACHMENTS'),
-                          const SizedBox(height: 8),
-                          _buildUploadArea(),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _selectDate(context, false),
+                              child: _buildFieldGroup('END DATE', _formatDate(_endDate)),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
+
+                      const SizedBox(height: 20),
+
+                      _buildDurationRow(),
+
+                      const SizedBox(height: 25),
+
+                      _buildLabel('REASON'),
+                      const SizedBox(height: 8),
+                      _buildMultilineField('Please explain the reason for your leave...'),
+
+                      const SizedBox(height: 25),
+
+                      _buildLabel('ATTACHMENTS'),
+                      const SizedBox(height: 8),
+                      _buildUploadArea(),
+                    ],
                   ),
                 ),
               ),
 
               const SizedBox(height: 25),
 
-          Container(
-            padding: const EdgeInsets.only(top: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _buildButton(
-                    label: 'Cancel',
-                    isPrimary: false,
-                    onTap: () => Navigator.pop(context),
-                  ),
+              Container(
+                padding: const EdgeInsets.only(top: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildButton(
+                        label: 'Cancel',
+                        isPrimary: false,
+                        onTap: () => Navigator.pop(context),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildButton(
+                        label: _isSubmitting ? 'Submitting...' : 'Submit Request',
+                        isPrimary: true,
+                        onTap: _isSubmitting ? () {} : _submitRequest,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildButton(
-                    label: 'Submit Request',
-                    isPrimary: true,
-                    onTap: () {},
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
             ],
           ),
         ),
@@ -162,7 +272,7 @@ class NewLeaveRequestDialog extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(value, style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF1E293B))),
+              Text(value, style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF1E293B))),
               const Icon(Icons.calendar_today_outlined, size: 16, color: Color(0xFF94A3B8)),
             ],
           ),
@@ -185,7 +295,7 @@ class NewLeaveRequestDialog extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            '1 day',
+            '$_durationDays ${_durationDays == 1 ? "day" : "days"}',
             style: GoogleFonts.poppins(
               fontSize: 12,
               color: const Color(0xFF2353D0),
@@ -206,14 +316,18 @@ class NewLeaveRequestDialog extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: 'Annual Leave',
+          value: _absenceType,
           icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF2353D0)),
           style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
           isExpanded: true,
-          items: ['Annual Leave', 'Sick Leave', 'Personal Leave']
+          items: _absenceTypes
               .map((String v) => DropdownMenuItem(value: v, child: Text(v)))
               .toList(),
-          onChanged: (val) {},
+          onChanged: (val) {
+            if (val != null) {
+              setState(() => _absenceType = val);
+            }
+          },
         ),
       ),
     );
@@ -221,6 +335,7 @@ class NewLeaveRequestDialog extends StatelessWidget {
 
   Widget _buildMultilineField(String hint) {
     return TextFormField(
+      controller: _reasonController,
       maxLines: 3,
       decoration: InputDecoration(
         hintText: hint,
@@ -242,7 +357,7 @@ class NewLeaveRequestDialog extends StatelessWidget {
   Widget _buildUploadArea() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 25),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
         borderRadius: BorderRadius.circular(20),
@@ -250,8 +365,8 @@ class NewLeaveRequestDialog extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Icon(Icons.cloud_upload_outlined, size: 36, color: Color(0xFFCBD5E1)),
-          const SizedBox(height: 10),
+          const Icon(Icons.cloud_upload_outlined, size: 32, color: Color(0xFFCBD5E1)),
+          const SizedBox(height: 8),
           Text(
             'DRAG & DROP OR CLICK TO UPLOAD',
             style: GoogleFonts.poppins(fontSize: 10, fontWeight: FontWeight.bold, color: const Color(0xFF94A3B8)),
@@ -271,7 +386,7 @@ class NewLeaveRequestDialog extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return SizedBox(
-      height: 54,
+      height: 50,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
@@ -289,7 +404,7 @@ class NewLeaveRequestDialog extends StatelessWidget {
             label,
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
             ),
@@ -298,4 +413,4 @@ class NewLeaveRequestDialog extends StatelessWidget {
       ),
     );
   }
-}
+}

@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LeaveRequestCard extends StatefulWidget {
+  final num? id;
   final String type;
   final String dateRange;
   final String reason;
   final String status;
   final Color statusColor;
   final IconData icon;
+  final VoidCallback? onDelete;
 
   const LeaveRequestCard({
     super.key,
+    this.id,
     required this.type,
     required this.dateRange,
     required this.reason,
     required this.status,
     required this.statusColor,
     required this.icon,
+    this.onDelete,
   });
 
   @override
@@ -75,8 +79,19 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     style: GoogleFonts.poppins(fontSize: 10, fontWeight: FontWeight.bold, color: widget.statusColor),
                   ),
                 ),
+                if (widget.onDelete != null) ...[
+                  const SizedBox(width: 8),
+                  IconButton(
+                    onPressed: widget.onDelete,
+                    icon: const Icon(Icons.delete_outline, color: Color(0xFFEF4444), size: 20),
+                    tooltip: 'Delete Request',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
               ],
             ),
+
             const SizedBox(height: 15),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
