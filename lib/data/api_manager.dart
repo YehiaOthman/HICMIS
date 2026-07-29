@@ -319,15 +319,18 @@ class ApiManager {
     Map<String, String> absenceTypeMap = {
       'Annual Leave': 'ANNUAL_LEAVE',
       'Sick Leave': 'SICK_LEAVE',
-      'Personal Leave': 'PERSONAL_LEAVE',
+      'Time Permission': 'TIME_PERMISSION',
+      'Maternity Leave': 'MATERNITY_LEAVE',
+      'Paternity Leave': 'PATERNITY_LEAVE',
+      'Emergency Leave': 'EMERGENCY_LEAVE',
       'Unpaid Leave': 'UNPAID_LEAVE',
-      'Maternity/Paternity Leave': 'MATERNITY_PATERNITY_LEAVE',
+      'Bereavement Leave': 'BEREAVEMENT_LEAVE',
     };
 
     String apiAbsenceType = absenceTypeMap[absenceType] ?? 'ANNUAL_LEAVE';
 
     Map<String, dynamic> body = {
-      'absenceType': 'ANNUAL_LEAVE',
+      'absenceType': apiAbsenceType,
       'startDate': startDate,
       'endDate': endDate,
       'reason': reason,

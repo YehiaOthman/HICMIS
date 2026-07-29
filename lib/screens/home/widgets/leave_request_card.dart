@@ -30,6 +30,20 @@ class LeaveRequestCard extends StatefulWidget {
 class _LeaveRequestCardState extends State<LeaveRequestCard> {
   bool _isExpanded = false;
 
+  String _formatAbsenceType(String apiType) {
+    Map<String, String> typeMap = {
+      'ANNUAL_LEAVE': 'Annual Leave',
+      'SICK_LEAVE': 'Sick Leave',
+      'TIME_PERMISSION': 'Time Permission',
+      'MATERNITY_LEAVE': 'Maternity Leave',
+      'PATERNITY_LEAVE': 'Paternity Leave',
+      'EMERGENCY_LEAVE': 'Emergency Leave',
+      'UNPAID_LEAVE': 'Unpaid Leave',
+      'BEREAVEMENT_LEAVE': 'Bereavement Leave',
+    };
+    return typeMap[apiType] ?? apiType;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -62,7 +76,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.type, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(_formatAbsenceType(widget.type), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
                       Text(widget.dateRange, style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
                     ],
                   ),
@@ -79,7 +93,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     style: GoogleFonts.poppins(fontSize: 10, fontWeight: FontWeight.bold, color: widget.statusColor),
                   ),
                 ),
-                if (widget.onDelete != null) ...[
+                if (widget.onDelete != null && (widget.status.toLowerCase() == 'pending' || widget.status.toLowerCase() == 'draft')) ...[
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: widget.onDelete,

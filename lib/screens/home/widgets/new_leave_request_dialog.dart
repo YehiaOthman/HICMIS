@@ -20,9 +20,12 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
   final List<String> _absenceTypes = [
     'Annual Leave',
     'Sick Leave',
-    'Personal Leave',
+    'Time Permission',
+    'Maternity Leave',
+    'Paternity Leave',
+    'Emergency Leave',
     'Unpaid Leave',
-    'Maternity/Paternity Leave',
+    'Bereavement Leave',
   ];
 
   @override
