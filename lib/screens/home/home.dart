@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:backtotrack/providers/auth_provider.dart';
+import 'package:backtotrack/providers/employee_provider.dart';
 import 'package:backtotrack/screens/home/widgets/new_leave_request_dialog.dart';
 import 'widgets/leave_request_card.dart';
 import 'widgets/app_drawer.dart';
@@ -18,8 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      authProvider.fetchMyAbsenceRequests();
+      final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
+      employeeProvider.fetchMyAbsenceRequests();
     });
   }
 
@@ -38,8 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(dialogContext);
-              final authProvider = Provider.of<AuthProvider>(context, listen: false);
-              final res = await authProvider.deleteAbsenceRequest(id);
+              final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
+              final res = await employeeProvider.deleteAbsenceRequest(id);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<AuthProvider>(context, listen: false).fetchMyAbsenceRequests();
+              Provider.of<EmployeeProvider>(context, listen: false).fetchMyAbsenceRequests();
             },
             icon: const Icon(Icons.refresh, color: Colors.black),
           ),
@@ -124,12 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Consumer<AuthProvider>(
-        builder: (context, authProvider, child) {
-          final requests = authProvider.absenceRequests;
+      body: Consumer<EmployeeProvider>(
+        builder: (context, employeeProvider, child) {
+          final requests = employeeProvider.absenceRequests;
 
           return RefreshIndicator(
-            onRefresh: () => authProvider.fetchMyAbsenceRequests(),
+            onRefresh: () => employeeProvider.fetchMyAbsenceRequests(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(20),
@@ -172,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  if (authProvider.isAbsenceLoading && requests.isEmpty)
+                  if (employeeProvider.isAbsenceLoading && requests.isEmpty)
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 40),
                       child: Center(

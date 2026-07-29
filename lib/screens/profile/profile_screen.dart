@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:backtotrack/providers/employee_provider.dart';
 import 'package:backtotrack/providers/auth_provider.dart';
 import 'widgets/profile_info_tile.dart';
 import 'widgets/history_card.dart';
@@ -17,8 +18,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      authProvider.fetchProfile();
+      final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
+      employeeProvider.fetchEmployeeProfile();
     });
   }
 
@@ -42,22 +43,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<AuthProvider>(context, listen: false).fetchProfile();
+              Provider.of<EmployeeProvider>(context, listen: false).fetchEmployeeProfile();
             },
             icon: const Icon(Icons.refresh, color: Colors.black),
           ),
           IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none)),
         ],
       ),
-      body: Consumer<AuthProvider>(
-        builder: (context, authProvider, child) {
-          if (authProvider.isProfileLoading && authProvider.employeeData == null) {
+      body: Consumer<EmployeeProvider>(
+        builder: (context, employeeProvider, child) {
+          if (employeeProvider.isLoading && employeeProvider.employeeData == null) {
             return const Center(
               child: CircularProgressIndicator(color: Color(0xFF2353D0)),
             );
           }
 
-          if (authProvider.profileError != null && authProvider.employeeData == null) {
+          if (employeeProvider.errorMessage != null && employeeProvider.employeeData == null) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -67,13 +68,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
                     const SizedBox(height: 12),
                     Text(
-                      authProvider.profileError!,
+                      employeeProvider.errorMessage!,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[800]),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
-                      onPressed: () => authProvider.fetchProfile(),
+                      onPressed: () => employeeProvider.fetchEmployeeProfile(),
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry'),
                       style: ElevatedButton.styleFrom(
@@ -87,10 +88,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           }
 
-          final data = authProvider.employeeData;
+          final data = employeeProvider.employeeData;
+          final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
           return RefreshIndicator(
-            onRefresh: () => authProvider.fetchProfile(),
+            onRefresh: () => employeeProvider.fetchEmployeeProfile(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
@@ -258,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 20),
 
-                        if (authProvider.educationHistory.isEmpty)
+                        if (employeeProvider.educationHistory.isEmpty)
                           HistoryCard(
                             icon: Icons.school_outlined,
                             title: 'Education History',
@@ -269,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           )
                         else
-                          ...authProvider.educationHistory.map(
+                          ...employeeProvider.educationHistory.map(
                             (edu) => HistoryCard(
                               icon: Icons.school_outlined,
                               title: 'Education History',
@@ -296,7 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
 
-                        if (authProvider.positionHistory.isEmpty)
+                        if (employeeProvider.positionHistory.isEmpty)
                           HistoryCard(
                             icon: Icons.work_outline,
                             title: 'Position History',
@@ -307,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           )
                         else
-                          ...authProvider.positionHistory.map(
+                          ...employeeProvider.positionHistory.map(
                             (pos) => HistoryCard(
                               icon: Icons.work_outline,
                               title: 'Position History',

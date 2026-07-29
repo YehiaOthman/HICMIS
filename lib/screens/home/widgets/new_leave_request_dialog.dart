@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:backtotrack/providers/auth_provider.dart';
+import 'package:backtotrack/providers/employee_provider.dart';
 
 class NewLeaveRequestDialog extends StatefulWidget {
   const NewLeaveRequestDialog({super.key});
@@ -93,8 +93,8 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
 
     setState(() => _isSubmitting = true);
 
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final result = await authProvider.createAbsenceRequest(
+    final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
+    final result = await employeeProvider.createAbsenceRequest(
       absenceType: _absenceType,
       startDate: _formatDate(_startDate),
       endDate: _formatDate(_endDate),
