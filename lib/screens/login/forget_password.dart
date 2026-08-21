@@ -1,3 +1,4 @@
+import 'package:backtotrack/data/api_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/custom_text_filed.dart';
@@ -29,7 +30,7 @@ class ForgotPasswordScreen extends StatelessWidget {
             const SizedBox(height: 40),
             const AuthHeader(
               icon: Icons.lock_outline,
-              boxColor: Color(0xFFFFB800), // Yellow/Orange color from image
+              boxColor: Color(0xFFFFB800),
               title: 'Reset Password',
               subtitle: 'Enter the email address linked to your account. We will send you a reset link.',
             ),
@@ -50,9 +51,32 @@ class ForgotPasswordScreen extends StatelessWidget {
                     icon: Icons.email_outlined,
                   ),
                   const SizedBox(height: 25),
+
                   PrimaryButton(
                     text: 'Send Reset Link',
-                    onPressed: () => Navigator.pushNamed(context, '/check-email'),
+                    onPressed: () async {
+                      var result = await ApiManager.forgotPassword(emailController.text);
+                      if (emailController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Please Enter Your Email',
+                              style: GoogleFonts.poppins(color: Colors.white),
+                            ),
+                            backgroundColor: Color(0xFF2353D0),
+                          ),
+                        );
+                        return;
+                      }
+
+                      if (result['success']) {
+                        Navigator.pushNamed(context, '/check-email',arguments: emailController.text);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(result['message']), backgroundColor: Color(0xFF2353D0)),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
