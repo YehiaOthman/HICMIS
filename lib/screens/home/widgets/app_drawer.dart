@@ -4,10 +4,15 @@ import 'package:provider/provider.dart';
 import 'package:backtotrack/providers/auth_provider.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+  final String currentRoute;
+  
+  const AppDrawer({super.key, required this.currentRoute});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final isHR = authProvider.isHR;
+
     return Drawer(
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
@@ -43,22 +48,41 @@ class AppDrawer extends StatelessWidget {
           _drawerItem(
             icon: Icons.person_outline,
             label: "My Profile",
-            isActive: false,
+            route: '/profile',
+            currentRoute: currentRoute,
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushReplacementNamed(context, '/profile');
             },
           ),
           _drawerItem(
             icon: Icons.calendar_today_outlined,
             label: "Leaves & Absences",
-            isActive: true,
-            onTap: () => Navigator.pop(context),
+            route: '/home',
+            currentRoute: currentRoute,
+            onTap: () {
+              Navigator.pop(context);
+              if (currentRoute != '/home') {
+                Navigator.pushReplacementNamed(context, '/home');
+              }
+            },
           ),
+          if (isHR)
+            _drawerItem(
+              icon: Icons.people_outline,
+              label: "Employees",
+              route: '/employees',
+              currentRoute: currentRoute,
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacementNamed(context, '/employees');
+              },
+            ),
           _drawerItem(
             icon: Icons.description_outlined,
             label: "Documents",
-            isActive: false,
+            route: null,
+            currentRoute: currentRoute,
             onTap: () {},
           ),
           const Spacer(),
@@ -67,7 +91,8 @@ class AppDrawer extends StatelessWidget {
             child: _drawerItem(
               icon: Icons.logout,
               label: "Logout",
-              isActive: false,
+              route: null,
+              currentRoute: currentRoute,
               onTap: () {
                 Navigator.pop(context);
                 _showLogoutDialog(context);
@@ -82,9 +107,12 @@ class AppDrawer extends StatelessWidget {
   Widget _drawerItem({
     required IconData icon,
     required String label,
-    required bool isActive,
+    required String? route,
+    required String? currentRoute,
     required VoidCallback onTap,
   }) {
+    final isActive = route != null && currentRoute == route;
+    
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       decoration: BoxDecoration(

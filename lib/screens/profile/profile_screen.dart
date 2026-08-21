@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:backtotrack/providers/employee_provider.dart';
 import 'package:backtotrack/providers/auth_provider.dart';
+import 'package:backtotrack/screens/home/widgets/app_drawer.dart';
 import 'widgets/profile_info_tile.dart';
 import 'widgets/history_card.dart';
 
@@ -18,7 +19,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
+      final employeeProvider = Provider.of<EmployeeProvider>(
+        context,
+        listen: false,
+      );
       employeeProvider.fetchEmployeeProfile();
     });
   }
@@ -29,48 +33,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
+      drawer: const AppDrawer(currentRoute: '/profile'),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
         ),
         title: Text(
           'My Account Profile',
-          style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+          style: GoogleFonts.poppins(
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<EmployeeProvider>(context, listen: false).fetchEmployeeProfile();
+              Provider.of<EmployeeProvider>(
+                context,
+                listen: false,
+              ).fetchEmployeeProfile();
             },
             icon: const Icon(Icons.refresh, color: Colors.black),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none)),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none),
+          ),
         ],
       ),
       body: Consumer<EmployeeProvider>(
         builder: (context, employeeProvider, child) {
-          if (employeeProvider.isLoading && employeeProvider.employeeData == null) {
+          if (employeeProvider.isLoading &&
+              employeeProvider.employeeData == null) {
             return const Center(
               child: CircularProgressIndicator(color: Color(0xFF2353D0)),
             );
           }
 
-          if (employeeProvider.errorMessage != null && employeeProvider.employeeData == null) {
+          if (employeeProvider.errorMessage != null &&
+              employeeProvider.employeeData == null) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+                    const Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: Colors.redAccent,
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       employeeProvider.errorMessage!,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[800]),
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.grey[800],
+                      ),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
@@ -81,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         backgroundColor: const Color(0xFF2353D0),
                         foregroundColor: Colors.white,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -89,7 +115,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
 
           final data = employeeProvider.employeeData;
-          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+          final authProvider = Provider.of<AuthProvider>(
+            context,
+            listen: false,
+          );
 
           return RefreshIndicator(
             onRefresh: () => employeeProvider.fetchEmployeeProfile(),
@@ -107,7 +136,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const CircleAvatar(
                               radius: 35,
                               backgroundColor: Colors.white,
-                              child: Icon(Icons.person_outline, size: 35, color: Color(0xFF94A3B8)),
+                              child: Icon(
+                                Icons.person_outline,
+                                size: 35,
+                                color: Color(0xFF94A3B8),
+                              ),
                             ),
                             const SizedBox(width: 15),
                             Expanded(
@@ -115,26 +148,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Wrap(
-                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
                                     spacing: 10,
                                     children: [
                                       Text(
                                         data?.name ?? 'Employee',
-                                        style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                      _buildStatusChip('ACTIVE ACCOUNT', Colors.green),
+                                      _buildStatusChip(
+                                        'ACTIVE ACCOUNT',
+                                        Colors.green,
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 4),
-                                  _buildStatusChip(data?.position ?? 'EMPLOYEE',Color(0xFF2353D0)),
+                                  _buildStatusChip(
+                                    data?.position ?? 'EMPLOYEE',
+                                    Color(0xFF2353D0),
+                                  ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    authProvider.username != null ? '${authProvider.username}@xtra.com' : 'employee@xtra.com',
-                                    style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF64748B)),
+                                    authProvider.username != null
+                                        ? '${authProvider.username}@xtra.com'
+                                        : 'employee@xtra.com',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13,
+                                      color: const Color(0xFF64748B),
+                                    ),
                                   ),
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         ),
                         const SizedBox(height: 15),
@@ -145,7 +193,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(25),
-                            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10)],
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.02),
+                                blurRadius: 10,
+                              ),
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +221,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: columnWidth,
                                     child: ProfileInfoTile(
                                       label: 'Username ID',
-                                      value: authProvider.username ?? (data?.empCode != null ? '${data!.empCode}' : 'N/A'),
+                                      value:
+                                          authProvider.username ??
+                                          (data?.empCode != null
+                                              ? '${data!.empCode}'
+                                              : 'N/A'),
                                     ),
                                   ),
                                   SizedBox(
@@ -203,7 +260,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     width: columnWidth,
                                     child: ProfileInfoTile(
                                       label: 'Direct Manager',
-                                      value: data?.directManagerName?.toString() ?? 'N/A',
+                                      value:
+                                          data?.directManagerName?.toString() ??
+                                          'N/A',
                                     ),
                                   ),
                                   SizedBox(
@@ -264,10 +323,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           HistoryCard(
                             icon: Icons.school_outlined,
                             title: 'Education History',
-                            subtitle: 'Manage degrees, institutions, and years of study.',
+                            subtitle:
+                                'Manage degrees, institutions, and years of study.',
                             child: Text(
                               'No education history records found.',
-                              style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF64748B)),
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: const Color(0xFF64748B),
+                              ),
                             ),
                           )
                         else
@@ -281,17 +344,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   Text(
                                     '${edu.degree ?? 'Degree'}${edu.major != null && edu.major!.isNotEmpty ? ' - ${edu.major}' : ''}',
-                                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  if (edu.institution != null && edu.institution!.isNotEmpty)
+                                  if (edu.institution != null &&
+                                      edu.institution!.isNotEmpty)
                                     Text(
                                       edu.institution!,
-                                      style: GoogleFonts.poppins(fontSize: 12, color: const Color(0xFF64748B)),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: const Color(0xFF64748B),
+                                      ),
                                     ),
                                   const SizedBox(height: 6),
                                   Text(
-                                    '${edu.startDate ?? ''} ${(edu.endDate != null && edu.endDate!.isNotEmpty) ? '- ${edu.endDate}' : ''}'.trim(),
-                                    style: GoogleFonts.poppins(fontSize: 11, color: const Color(0xFF94A3B8)),
+                                    '${edu.startDate ?? ''} ${(edu.endDate != null && edu.endDate!.isNotEmpty) ? '- ${edu.endDate}' : ''}'
+                                        .trim(),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 11,
+                                      color: const Color(0xFF94A3B8),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -302,10 +376,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           HistoryCard(
                             icon: Icons.work_outline,
                             title: 'Position History',
-                            subtitle: 'Manage positions, departments, and tenure dates.',
+                            subtitle:
+                                'Manage positions, departments, and tenure dates.',
                             child: Text(
                               'No position history records found.',
-                              style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF64748B)),
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: const Color(0xFF64748B),
+                              ),
                             ),
                           )
                         else
@@ -319,17 +397,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   Text(
                                     pos.title ?? 'Position',
-                                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  if (pos.departmentName != null && pos.departmentName!.isNotEmpty)
+                                  if (pos.departmentName != null &&
+                                      pos.departmentName!.isNotEmpty)
                                     Text(
                                       pos.departmentName!,
-                                      style: GoogleFonts.poppins(fontSize: 12, color: const Color(0xFF64748B)),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: const Color(0xFF64748B),
+                                      ),
                                     ),
                                   const SizedBox(height: 6),
                                   Text(
                                     '${pos.startDate ?? ''} ${(pos.endDate != null && pos.endDate!.isNotEmpty) ? '- ${pos.endDate}' : '- Present'}',
-                                    style: GoogleFonts.poppins(fontSize: 11, color: const Color(0xFF94A3B8)),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 11,
+                                      color: const Color(0xFF94A3B8),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -347,7 +435,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   Widget _buildStatusChip(String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -357,7 +444,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(2),
-        child: Text(text, style: GoogleFonts.poppins(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+        child: Text(
+          text,
+          style: GoogleFonts.poppins(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

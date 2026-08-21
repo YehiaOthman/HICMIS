@@ -32,7 +32,8 @@ class ApiManager {
     if (data == null) return null;
     if (data is Map) {
       if (data['refreshToken'] != null) return data['refreshToken'].toString();
-      if (data['refresh_token'] != null) return data['refresh_token'].toString();
+      if (data['refresh_token'] != null)
+        return data['refresh_token'].toString();
       if (data['data'] != null) return _extractRefreshToken(data['data']);
     }
     return null;
@@ -46,17 +47,17 @@ class ApiManager {
     return await _storage.read(key: 'username');
   }
 
-  static Future<Map<String, dynamic>> login(String username, String password) async {
+  static Future<Map<String, dynamic>> login(
+    String username,
+    String password,
+  ) async {
     Uri url = Uri.https(baseUrl, loginPath);
 
     try {
       var response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          'username': username,
-          'password': password,
-        }),
+        body: jsonEncode({'username': username, 'password': password}),
       );
 
       dynamic data;
@@ -80,7 +81,10 @@ class ApiManager {
 
         return {'success': true, 'data': data};
       } else {
-        String message = data is Map ? (data['message'] ?? data['error'] ?? 'Login Failed') : 'Login Failed (${response.statusCode})';
+        String message =
+            data is Map
+                ? (data['message'] ?? data['error'] ?? 'Login Failed')
+                : 'Login Failed (${response.statusCode})';
         return {'success': false, 'message': message};
       }
     } catch (e) {
@@ -133,7 +137,7 @@ class ApiManager {
       var data = jsonDecode(response.body);
       return {
         'success': response.statusCode == 200 || response.statusCode == 201,
-        'message': data['message'] ?? 'Check your email for reset link'
+        'message': data['message'] ?? 'Check your email for reset link',
       };
     } catch (e) {
       return {'success': false, 'message': 'Connection error: $e'};
@@ -153,7 +157,9 @@ class ApiManager {
     String? token = await getAccessToken();
 
     if (token == null || token.isEmpty) {
-      return EmployeeResponse(message: "No authentication token found. Please sign in again.");
+      return EmployeeResponse(
+        message: "No authentication token found. Please sign in again.",
+      );
     }
 
     try {
@@ -192,20 +198,28 @@ class ApiManager {
         if (data != null) {
           return EmployeeResponse.fromJson(data);
         } else {
-          return EmployeeResponse(message: "Invalid response format from server.");
+          return EmployeeResponse(
+            message: "Invalid response format from server.",
+          );
         }
       } else {
-        String msg = (data is Map && (data['message'] != null || data['error'] != null))
-            ? (data['message'] ?? data['error']).toString()
-            : "Server returned error status code: ${response.statusCode}";
-        return EmployeeResponse(status: response.statusCode.toString(), message: msg);
+        String msg =
+            (data is Map && (data['message'] != null || data['error'] != null))
+                ? (data['message'] ?? data['error']).toString()
+                : "Server returned error status code: ${response.statusCode}";
+        return EmployeeResponse(
+          status: response.statusCode.toString(),
+          message: msg,
+        );
       }
     } catch (e) {
       return EmployeeResponse(message: "Connection exception: $e");
     }
   }
 
-  static Future<List<EducationHistory>> getEducationHistory(num employeeId) async {
+  static Future<List<EducationHistory>> getEducationHistory(
+    num employeeId,
+  ) async {
     Uri url = Uri.https(baseUrl, '/api/education/employee/$employeeId');
     String? token = await getAccessToken();
 
@@ -252,7 +266,9 @@ class ApiManager {
     }
   }
 
-  static Future<List<PositionHistory>> getPositionHistory(num employeeId) async {
+  static Future<List<PositionHistory>> getPositionHistory(
+    num employeeId,
+  ) async {
     Uri url = Uri.https(baseUrl, '/api/position-history/employee/$employeeId');
     String? token = await getAccessToken();
 
@@ -377,9 +393,18 @@ class ApiManager {
       }
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return {'success': true, 'message': 'Leave request created successfully', 'data': data};
+        return {
+          'success': true,
+          'message': 'Leave request created successfully',
+          'data': data,
+        };
       } else {
-        String msg = data is Map ? (data['message'] ?? data['error'] ?? 'Failed to submit leave request') : 'Failed to submit leave request (${response.statusCode})';
+        String msg =
+            data is Map
+                ? (data['message'] ??
+                    data['error'] ??
+                    'Failed to submit leave request')
+                : 'Failed to submit leave request (${response.statusCode})';
         return {'success': false, 'message': msg};
       }
     } catch (e) {
@@ -481,12 +506,21 @@ class ApiManager {
       }
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        return {'success': true, 'message': 'Leave request deleted successfully'};
+        return {
+          'success': true,
+          'message': 'Leave request deleted successfully',
+        };
       } else {
-        String msg = data is Map ? (data['message'] ?? data['error'] ?? 'Failed to delete request') : 'Failed to delete request (${response.statusCode})';
+        String msg =
+            data is Map
+                ? (data['message'] ??
+                    data['error'] ??
+                    'Failed to delete request')
+                : 'Failed to delete request (${response.statusCode})';
         // Provide more specific error message for status-related issues
         if (msg.contains('status') || msg.contains('state')) {
-          msg = 'Cannot delete request - it may already be processed. Only pending requests can be deleted.';
+          msg =
+              'Cannot delete request - it may already be processed. Only pending requests can be deleted.';
         }
         return {'success': false, 'message': msg};
       }
@@ -495,5 +529,3 @@ class ApiManager {
     }
   }
 }
-
-

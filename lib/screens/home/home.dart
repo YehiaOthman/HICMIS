@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:backtotrack/providers/employee_provider.dart';
+import 'package:backtotrack/providers/auth_provider.dart';
 import 'package:backtotrack/screens/home/widgets/new_leave_request_dialog.dart';
 import 'widgets/leave_request_card.dart';
 import 'widgets/app_drawer.dart';
@@ -14,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedTabIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -88,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
-      drawer: const AppDrawer(),
+      drawer: const AppDrawer(currentRoute: '/home'),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
@@ -124,9 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Consumer<EmployeeProvider>(
-        builder: (context, employeeProvider, child) {
+      body: Consumer2<EmployeeProvider, AuthProvider>(
+        builder: (context, employeeProvider, authProvider, child) {
           final requests = employeeProvider.absenceRequests;
+          final isHR = authProvider.isHR;
+          final pendingRequests = requests.where((req) => req.status?.toLowerCase() == 'pending').toList();
 
           return RefreshIndicator(
             onRefresh: () => employeeProvider.fetchMyAbsenceRequests(),
@@ -146,28 +151,87 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text('Track entitlements and requests.', style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
                         ],
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => const NewLeaveRequestDialog(),
-                          );
-                        },
-                        icon: const Icon(Icons.add, size: 18),
-                        label: const Text('Request'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2353D0),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      if (!isHR || _selectedTabIndex == 0)
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => const NewLeaveRequestDialog(),
+                            );
+                          },
+                          icon: const Icon(Icons.add, size: 18),
+                          label: const Text('Request'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2353D0),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 25),
+                  
+                  if (isHR)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedTabIndex = 0),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: _selectedTabIndex == 0 ? const Color(0xFF2353D0) : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'My Requests',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.poppins(
+                                    color: _selectedTabIndex == 0 ? Colors.white : Colors.grey[600],
+                                    fontWeight: _selectedTabIndex == 0 ? FontWeight.w600 : FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedTabIndex = 1),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: _selectedTabIndex == 1 ? const Color(0xFF2353D0) : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'Pending Requests',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.poppins(
+                                    color: _selectedTabIndex == 1 ? Colors.white : Colors.grey[600],
+                                    fontWeight: _selectedTabIndex == 1 ? FontWeight.w600 : FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  
+                  const SizedBox(height: 20),
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${requests.length} requests found', style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13)),
+                      Text(
+                        '${(isHR && _selectedTabIndex == 1 ? pendingRequests : requests).length} requests found',
+                        style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -180,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     )
 
-                  else if (requests.isEmpty)
+                  else if ((isHR && _selectedTabIndex == 1 ? pendingRequests : requests).isEmpty)
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(30),
@@ -192,14 +256,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           const Icon(Icons.inbox_outlined, size: 48, color: Color(0xFFCBD5E1)),
                           const SizedBox(height: 10),
-                          Text('No Leave Requests Yet', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF475569))),
+                          Text(
+                            isHR && _selectedTabIndex == 1 ? 'No Pending Requests' : 'No Leave Requests Yet',
+                            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
+                          ),
                           const SizedBox(height: 5),
-                          Text('Click "Request" to submit a new leave application.', style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey), textAlign: TextAlign.center),
+                          Text(
+                            isHR && _selectedTabIndex == 1 
+                              ? 'There are no pending requests to review.' 
+                              : 'Click "Request" to submit a new leave application.',
+                            style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
                         ],
                       ),
                     )
                   else
-                    ...requests.map(
+                    ...(isHR && _selectedTabIndex == 1 ? pendingRequests : requests).map(
                       (req) => LeaveRequestCard(
                         id: req.id,
                         type: req.absenceType ?? 'Leave Request',
@@ -208,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         status: req.status ?? 'PENDING',
                         statusColor: _getStatusColor(req.status),
                         icon: _getAbsenceIcon(req.absenceType),
-                        onDelete: req.id != null ? () => _confirmDelete(context, req.id!) : null,
+                        onDelete: req.id != null && _selectedTabIndex == 0 ? () => _confirmDelete(context, req.id!) : null,
                       ),
                     ),
                 ],

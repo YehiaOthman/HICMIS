@@ -4,6 +4,7 @@ import 'package:backtotrack/data/models/employee_data.dart';
 import 'package:backtotrack/data/models/education_history.dart';
 import 'package:backtotrack/data/models/position_history.dart';
 import 'package:backtotrack/data/models/absence_request.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 enum AuthStatus {
   initial,
@@ -25,6 +26,7 @@ class AuthProvider with ChangeNotifier {
   bool _isAbsenceLoading = false;
   String? _profileError;
   String? _absenceError;
+  String? _userRole;
 
   AuthStatus get status => _status;
   String? get errorMessage => _errorMessage;
@@ -39,6 +41,34 @@ class AuthProvider with ChangeNotifier {
   String? get absenceError => _absenceError;
   bool get isAuthenticated => _status == AuthStatus.authenticated;
   bool get isLoading => _status == AuthStatus.loading;
+  String? get userRole => _userRole;
+  bool get isHR => _userRole == 'hr';
+  bool get isEmployee => _userRole == 'employee';
+
+  Future<void> _extractUserRoleFromToken() async {
+    final token = await ApiManager.getAccessToken();
+    if (token != null && token.isNotEmpty) {
+      try {
+        final decodedToken = Jwt.parseJwt(token);
+        if (decodedToken is Map && decodedToken['resource_access'] is Map) {
+          final resourceAccess = decodedToken['resource_access'] as Map;
+          if (resourceAccess['HICMIS_BE_CLIENT'] is Map) {
+            final clientData = resourceAccess['HICMIS_BE_CLIENT'] as Map;
+            if (clientData['roles'] is List) {
+              final roles = clientData['roles'] as List;
+              if (roles.contains('hr')) {
+                _userRole = 'hr';
+              } else if (roles.contains('employee')) {
+                _userRole = 'employee';
+              }
+            }
+          }
+        }
+      } catch (e) {
+        print('Error decoding JWT token: $e');
+      }
+    }
+  }
 
   Future<void> fetchProfile() async {
     _isProfileLoading = true;
@@ -136,6 +166,7 @@ class AuthProvider with ChangeNotifier {
       _status = AuthStatus.authenticated;
       _username = username;
       notifyListeners();
+      await _extractUserRoleFromToken();
       await fetchProfile();
       await fetchMyAbsenceRequests();
       return true;
@@ -181,6 +212,7 @@ class AuthProvider with ChangeNotifier {
     _errorMessage = null;
     _profileError = null;
     _absenceError = null;
+    _userRole = null;
     notifyListeners();
   }
 
@@ -190,6 +222,7 @@ class AuthProvider with ChangeNotifier {
       _username = await ApiManager.getUsername();
       _status = AuthStatus.authenticated;
       notifyListeners();
+      await _extractUserRoleFromToken();
       await fetchProfile();
       await fetchMyAbsenceRequests();
       return true;
