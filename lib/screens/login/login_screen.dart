@@ -1,5 +1,7 @@
+import 'package:backtotrack/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'widgets/custom_text_filed.dart';
 import 'widgets/custom_password_text_filed.dart';
 import 'widgets/auth_header.dart';
@@ -28,99 +30,150 @@ class LoginScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            const AuthHeader(
-              icon: Icons.person_outline,
-              title: 'Welcome Back',
-              subtitle: 'Sign in to access your employee dashboard and account details.', boxColor: Color(0xFF00C1A3),
-            ),
-
-            const SizedBox(height: 35),
-
-            // 2. The Form Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  )
-                ],
-              ),
-              child: Column(
-                children: [
-                  CustomTextFiled(
-                    label: 'Username',
-                    title: 'Enter your username',
-                    validator: (val) => null,
-                    controller: userController,
-                    icon: Icons.person_outline,
-                  ),
-                  const SizedBox(height: 20),
-                  CustomPasswordTextFiled(
-                    label: 'Password',
-                    title: 'Enter your password',
-                    validator: (val) => null,
-                    controller: passController,
-                    icon: Icons.lock_outline,
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/forgot');
-                      },
-                      child: Text(
-                        'Forgot Password?',
-                        style: GoogleFonts.poppins(color: Color(0xFF2353D0), fontWeight: FontWeight.w600, fontSize: 13),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  PrimaryButton(
-                    text: 'Sign In',
-                    onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 35),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: Consumer<AuthProvider>(
+        builder: (context, authProvider, child) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Column(
               children: [
-                Text("Don't have an account? ",
-                    style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13)),
-                GestureDetector(
-                  onTap: () {
+                const SizedBox(height: 40),
+                const AuthHeader(
+                  icon: Icons.person_outline,
+                  title: 'Welcome Back',
+                  subtitle:
+                      'Sign in to access your employee dashboard and account details.',
+                  boxColor: Color(0xFF00C1A3),
+                ),
 
-                    Navigator.pushNamed(context, '/signup');
-                  },
-                  child: Text(
-                    "Create Account",
-                    style: GoogleFonts.poppins(
-                        color: Color(0xFF2353D0),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13),
+                const SizedBox(height: 35),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      CustomTextFiled(
+                        label: 'Username',
+                        title: 'Enter your username',
+                        validator: (val) => null,
+                        controller: userController,
+                        icon: Icons.person_outline,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomPasswordTextFiled(
+                        label: 'Password',
+                        title: 'Enter your password',
+                        validator: (val) => null,
+                        controller: passController,
+                        icon: Icons.lock_outline,
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/forgot');
+                          },
+                          child: Text(
+                            'Forgot Password?',
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF2353D0),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      PrimaryButton(
+                        text: 'Sign In',
+                        isLoading: authProvider.isLoading,
+                        onPressed: () async {
+                          if (userController.text.trim().isEmpty ||
+                              passController.text.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Please fill all fields',
+                                  style: GoogleFonts.poppins(color: Colors.white),
+                                ),
+                                backgroundColor: const Color(0xFF2353D0),
+                              ),
+                            );
+                            return;
+                          }
+
+                          final success = await authProvider.login(
+                            userController.text.trim(),
+                            passController.text.trim(),
+                          );
+
+                          if (context.mounted) {
+                            if (success) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/home',
+                                (route) => false,
+                              );
+                            } else if (authProvider.errorMessage != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    authProvider.errorMessage!,
+                                    style: GoogleFonts.poppins(color: Colors.white),
+                                  ),
+                                  backgroundColor: const Color(0xFF2353D0),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
+
+
+                const SizedBox(height: 35),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account? ",
+                      style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      child: Text(
+                        "Create Account",
+                        style: GoogleFonts.poppins(
+                          color: Color(0xFF2353D0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
               ],
             ),
-            const SizedBox(height: 30),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

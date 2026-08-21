@@ -9,6 +9,7 @@ class CheckEmailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final email = ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
       appBar: AppBar(
@@ -25,7 +26,6 @@ class CheckEmailScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 50),
-            // Custom Circular Icon with Checkmark
             Center(
               child: Stack(
                 alignment: Alignment.bottomRight,
@@ -57,7 +57,6 @@ class CheckEmailScreen extends StatelessWidget {
               style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[500]),
             ),
             const SizedBox(height: 40),
-            // Info Box
             Container(
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
@@ -73,7 +72,7 @@ class CheckEmailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('SENT TO', style: GoogleFonts.poppins(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2)),
-                      Text('employee@xtra.com', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF1E293B))),
+                      Text(email, style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF1E293B))),
                       Text('Link expires in 30 minutes', style: GoogleFonts.poppins(fontSize: 11, color: Colors.grey)),
                     ],
                   )

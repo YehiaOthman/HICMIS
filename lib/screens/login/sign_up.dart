@@ -45,7 +45,6 @@ class SignUpScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 30),
 
-            // Reusable Header
             const AuthHeader(
               icon: Icons.person_add_alt_1_outlined,
               title: 'New Employee Account',
@@ -54,7 +53,6 @@ class SignUpScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // Section 1: Personal Information
             _buildSectionCard(
               title: "PERSONAL INFORMATION",
               children: [
@@ -94,7 +92,6 @@ class SignUpScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Section 2: Account Credentials
             _buildSectionCard(
               title: "ACCOUNT CREDENTIALS",
               children: [
@@ -126,7 +123,6 @@ class SignUpScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // Terms and Conditions Text
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: RichText(
@@ -152,7 +148,6 @@ class SignUpScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // Reusable Primary Button
             PrimaryButton(
               text: 'Create Account',
               onPressed: () {},
@@ -160,7 +155,6 @@ class SignUpScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // Footer
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -183,7 +177,6 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to build the grouped white cards
   Widget _buildSectionCard({required String title, required List<Widget> children}) {
     return Container(
       width: double.infinity,
