@@ -8,6 +8,7 @@ class EmployeeCard extends StatelessWidget {
   final String department;
   final String hireDate;
   final Color avatarColor;
+  final VoidCallback? onViewPressed;
 
   const EmployeeCard({
     super.key,
@@ -17,6 +18,7 @@ class EmployeeCard extends StatelessWidget {
     required this.department,
     required this.hireDate,
     required this.avatarColor,
+    this.onViewPressed,
   });
 
   @override
@@ -98,7 +100,7 @@ class EmployeeCard extends StatelessWidget {
             ),
             child: IconButton(
               icon: const Icon(Icons.visibility_outlined, color: Color(0xFF2353D0), size: 20),
-              onPressed: () {},
+              onPressed: onViewPressed,
             ),
           ),
         ],

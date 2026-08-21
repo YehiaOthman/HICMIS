@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:backtotrack/screens/home/widgets/app_drawer.dart';
 import 'package:backtotrack/providers/employee_provider.dart';
 import 'widgets/employees_card.dart';
+import 'employee_detail_screen.dart';
 
 class EmployeesScreen extends StatefulWidget {
   const EmployeesScreen({super.key});
@@ -48,7 +49,8 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
   }
 
   void _onSearchChanged(String value) {
-    // Debounce search
+    setState(() {});
+    // Debounce search for API call
     Future.delayed(const Duration(milliseconds: 500), () {
       if (_searchController.text == value) {
         _fetchEmployees();
@@ -209,27 +211,42 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
             const SizedBox(height: 25),
             Consumer<EmployeeProvider>(
               builder: (context, employeeProvider, child) {
-                final employees = employeeProvider.employeesList;
+                final allEmployees = employeeProvider.employeesList;
                 final isLoading = employeeProvider.isEmployeesLoading;
                 final total = employeeProvider.totalEmployees;
-                
+                final searchQuery = _searchController.text.toLowerCase().trim();
+
+                // Apply client-side filtering
+                final filteredEmployees = searchQuery.isEmpty
+                    ? allEmployees
+                    : allEmployees.where((employee) {
+                        final name = (employee.name ?? '').toLowerCase();
+                        final code = (employee.empCode ?? '').toLowerCase();
+                        final department = (employee.departmentName ?? '').toLowerCase();
+                        return name.contains(searchQuery) ||
+                               code.contains(searchQuery) ||
+                               department.contains(searchQuery);
+                      }).toList();
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      total != null ? '$total employees found' : 'Loading...',
+                      searchQuery.isEmpty
+                          ? (total != null ? '$total employees found' : 'Loading...')
+                          : '${filteredEmployees.length} employees found',
                       style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
                     ),
                     const SizedBox(height: 15),
 
-                    if (isLoading && employees.isEmpty)
+                    if (isLoading && allEmployees.isEmpty)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 40),
                         child: Center(
                           child: CircularProgressIndicator(color: Color(0xFF2353D0)),
                         ),
                       )
-                    else if (employees.isEmpty)
+                    else if (filteredEmployees.isEmpty)
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(30),
@@ -247,7 +264,9 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              'Try adjusting your search or filters.',
+                              searchQuery.isEmpty
+                                  ? 'No employees available.'
+                                  : 'Try adjusting your search or filters.',
                               style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
                             ),
                           ],
@@ -256,15 +275,28 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                     else
                       Column(
                         children: [
-                          ...employees.map((employee) => EmployeeCard(
+                          ...filteredEmployees.map((employee) => EmployeeCard(
                             name: employee.name ?? 'Unknown',
                             id: employee.id?.toString() ?? '',
                             code: employee.empCode ?? '',
                             department: employee.departmentName ?? 'Unknown',
                             hireDate: employee.hireDate ?? '',
                             avatarColor: _getAvatarColor(employee.name),
+                            onViewPressed: () {
+                              if (employee.id != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EmployeeDetailScreen(
+                                      employeeId: employee.id!,
+                                      employeeName: employee.name ?? 'Employee',
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
                           )),
-                          if (isLoading && employees.isNotEmpty)
+                          if (isLoading && allEmployees.isNotEmpty)
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 20),
                               child: Center(

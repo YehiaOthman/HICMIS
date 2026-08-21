@@ -233,4 +233,31 @@ class EmployeeProvider with ChangeNotifier {
     _employeesError = null;
     notifyListeners();
   }
+
+  Future<void> fetchEmployeeById(num employeeId) async {
+    _status = EmployeeStatus.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await ApiManager.getEmployeeById(employeeId);
+      if (response != null && response.data != null) {
+        _employeeData = response.data;
+        _errorMessage = null;
+        _status = EmployeeStatus.loaded;
+
+        if (_employeeData?.id != null) {
+          await fetchEmployeeHistory(_employeeData!.id!);
+        }
+      } else {
+        _errorMessage = response?.message ?? 'Failed to fetch employee data';
+        _status = EmployeeStatus.error;
+      }
+    } catch (e) {
+      _errorMessage = 'Error loading employee profile: $e';
+      _status = EmployeeStatus.error;
+    } finally {
+      notifyListeners();
+    }
+  }
 }

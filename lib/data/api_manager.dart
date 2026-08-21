@@ -603,4 +603,69 @@ class ApiManager {
       return EmployeesListResponse(message: "Connection exception: $e");
     }
   }
+
+  static Future<EmployeeResponse?> getEmployeeById(num employeeId) async {
+    Uri url = Uri.https(baseUrl, '$employeesPath/$employeeId');
+    String? token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      return EmployeeResponse(
+        message: "No authentication token found. Please sign in again.",
+      );
+    }
+
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          String? newToken = await getAccessToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            response = await http.get(
+              url,
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer $newToken",
+              },
+            );
+          }
+        }
+      }
+
+      dynamic data;
+      try {
+        data = jsonDecode(response.body);
+      } catch (_) {
+        data = null;
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (data != null) {
+          return EmployeeResponse.fromJson(data);
+        } else {
+          return EmployeeResponse(
+            message: "Invalid response format from server.",
+          );
+        }
+      } else {
+        String msg =
+            (data is Map && (data['message'] != null || data['error'] != null))
+                ? (data['message'] ?? data['error']).toString()
+                : "Server returned error status code: ${response.statusCode}";
+        return EmployeeResponse(
+          status: response.statusCode.toString(),
+          message: msg,
+        );
+      }
+    } catch (e) {
+      return EmployeeResponse(message: "Connection exception: $e");
+    }
+  }
 }
