@@ -42,7 +42,7 @@ class EmployeeCard extends StatelessWidget {
             radius: 25,
             backgroundColor: avatarColor,
             child: Text(
-              name.split(' ').map((e) => e[0]).take(2).join().toUpperCase(),
+              _getInitials(name),
               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
@@ -115,5 +115,21 @@ class EmployeeCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _getInitials(String name) {
+    if (name.isEmpty) return '?';
+    final parts = name.trim().split(' ');
+    if (parts.isEmpty) return '?';
+    
+    String initials = '';
+    for (var part in parts) {
+      if (part.isNotEmpty) {
+        initials += part[0];
+      }
+      if (initials.length >= 2) break;
+    }
+    
+    return initials.isEmpty ? '?' : initials.toUpperCase();
   }
 }

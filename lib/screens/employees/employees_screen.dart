@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:backtotrack/screens/home/widgets/app_drawer.dart';
+import 'package:backtotrack/providers/employee_provider.dart';
 import 'widgets/employees_card.dart';
 
 class EmployeesScreen extends StatefulWidget {
@@ -12,6 +14,47 @@ class EmployeesScreen extends StatefulWidget {
 
 class _EmployeesScreenState extends State<EmployeesScreen> {
   bool _showFilters = false;
+  final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchEmployees();
+    });
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
+      if (employeeProvider.hasMoreEmployees && !employeeProvider.isEmployeesLoading) {
+        employeeProvider.fetchEmployees(search: _searchController.text, reset: false);
+      }
+    }
+  }
+
+  void _fetchEmployees() {
+    final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
+    employeeProvider.fetchEmployees(search: _searchController.text);
+  }
+
+  void _onSearchChanged(String value) {
+    // Debounce search
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (_searchController.text == value) {
+        _fetchEmployees();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +71,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
         ),
       ),
       body: SingleChildScrollView(
+        controller: _scrollController,
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,6 +113,8 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                       boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)],
                     ),
                     child: TextField(
+                      controller: _searchController,
+                      onChanged: _onSearchChanged,
                       decoration: InputDecoration(
                         hintText: 'Search by name...',
                         hintStyle: GoogleFonts.poppins(color: Colors.grey, fontSize: 14),
@@ -161,30 +207,94 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
             ),
 
             const SizedBox(height: 25),
-            Text('6 employees found', style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13)),
-            const SizedBox(height: 15),
+            Consumer<EmployeeProvider>(
+              builder: (context, employeeProvider, child) {
+                final employees = employeeProvider.employeesList;
+                final isLoading = employeeProvider.isEmployeesLoading;
+                final total = employeeProvider.totalEmployees;
+                
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      total != null ? '$total employees found' : 'Loading...',
+                      style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+                    ),
+                    const SizedBox(height: 15),
 
-            // Employee List
-             EmployeeCard(
-              name: 'Adham Ghobashy',
-              id: '1',
-              code: '0',
-              department: 'Human Resources',
-              hireDate: '2026-06-26',
-              avatarColor: Color(0xFF00C1A3),
-            ),
-             EmployeeCard(
-              name: 'ADMIN',
-              id: '4',
-              code: '100',
-              department: 'Management',
-              hireDate: '2026-01-01',
-              avatarColor: Color(0xFFEF4444),
+                    if (isLoading && employees.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Center(
+                          child: CircularProgressIndicator(color: Color(0xFF2353D0)),
+                        ),
+                      )
+                    else if (employees.isEmpty)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(30),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Column(
+                          children: [
+                            const Icon(Icons.people_outline, size: 48, color: Color(0xFFCBD5E1)),
+                            const SizedBox(height: 10),
+                            Text(
+                              'No Employees Found',
+                              style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'Try adjusting your search or filters.',
+                              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      Column(
+                        children: [
+                          ...employees.map((employee) => EmployeeCard(
+                            name: employee.name ?? 'Unknown',
+                            id: employee.id?.toString() ?? '',
+                            code: employee.empCode ?? '',
+                            department: employee.departmentName ?? 'Unknown',
+                            hireDate: employee.hireDate ?? '',
+                            avatarColor: _getAvatarColor(employee.name),
+                          )),
+                          if (isLoading && employees.isNotEmpty)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Center(
+                                child: CircularProgressIndicator(color: Color(0xFF2353D0)),
+                              ),
+                            ),
+                        ],
+                      ),
+                  ],
+                );
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  Color _getAvatarColor(String? name) {
+    if (name == null || name.isEmpty) return const Color(0xFF94A3B8);
+    final colors = [
+      const Color(0xFF2353D0),
+      const Color(0xFF00C1A3),
+      const Color(0xFFEF4444),
+      const Color(0xFFF59E0B),
+      const Color(0xFF8B5CF6),
+      const Color(0xFFEC4899),
+    ];
+    final index = name.hashCode % colors.length;
+    return colors[index.abs()];
   }
 
   // Helper UI methods

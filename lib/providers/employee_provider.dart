@@ -4,6 +4,7 @@ import 'package:backtotrack/data/models/employee_data.dart';
 import 'package:backtotrack/data/models/education_history.dart';
 import 'package:backtotrack/data/models/position_history.dart';
 import 'package:backtotrack/data/models/absence_request.dart';
+import 'package:backtotrack/data/models/employees_list_response.dart';
 
 enum EmployeeStatus { initial, loading, loaded, error }
 
@@ -16,6 +17,16 @@ class EmployeeProvider with ChangeNotifier {
   List<AbsenceRequest> _absenceRequests = [];
   bool _isAbsenceLoading = false;
   String? _absenceError;
+  
+  // Employees list state
+  List<EmployeeData> _employeesList = [];
+  bool _isEmployeesLoading = false;
+  String? _employeesError;
+  int _currentPage = 1;
+  int _pageSize = 20;
+  num? _totalEmployees;
+  num? _totalPages;
+  String? _currentSearch;
 
   EmployeeStatus get status => _status;
 
@@ -36,6 +47,17 @@ class EmployeeProvider with ChangeNotifier {
   bool get isAbsenceLoading => _isAbsenceLoading;
 
   String? get absenceError => _absenceError;
+
+  // Employees list getters
+  List<EmployeeData> get employeesList => _employeesList;
+  bool get isEmployeesLoading => _isEmployeesLoading;
+  String? get employeesError => _employeesError;
+  int get currentPage => _currentPage;
+  int get pageSize => _pageSize;
+  num? get totalEmployees => _totalEmployees;
+  num? get totalPages => _totalPages;
+  String? get currentSearch => _currentSearch;
+  bool get hasMoreEmployees => _totalPages != null && _currentPage <= _totalPages!;
 
   Future<void> fetchEmployeeProfile() async {
     _status = EmployeeStatus.loading;
@@ -155,6 +177,60 @@ class EmployeeProvider with ChangeNotifier {
   void clearError() {
     _errorMessage = null;
     _absenceError = null;
+    notifyListeners();
+  }
+
+  Future<void> fetchEmployees({
+    String? search,
+    bool reset = true,
+  }) async {
+    if (reset) {
+      _currentPage = 0;
+      _employeesList = [];
+      _currentSearch = search;
+    } else {
+      _currentSearch = search;
+    }
+
+    _isEmployeesLoading = true;
+    _employeesError = null;
+    notifyListeners();
+
+    try {
+      final response = await ApiManager.getEmployees(
+        search: _currentSearch,
+        page: _currentPage,
+        pageSize: _pageSize,
+      );
+
+      if (response != null && response.content != null) {
+        if (reset) {
+          _employeesList = response.content!;
+        } else {
+          _employeesList.addAll(response.content!);
+        }
+        _totalEmployees = response.totalElements;
+        _totalPages = response.totalPages;
+        _currentPage++;
+        _employeesError = null;
+      } else {
+        _employeesError = response?.message ?? 'Failed to fetch employees';
+      }
+    } catch (e) {
+      _employeesError = 'Error loading employees: $e';
+    } finally {
+      _isEmployeesLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void clearEmployeesList() {
+    _employeesList = [];
+    _currentPage = 1;
+    _totalEmployees = null;
+    _totalPages = null;
+    _currentSearch = null;
+    _employeesError = null;
     notifyListeners();
   }
 }

@@ -3,6 +3,7 @@ import 'package:backtotrack/data/models/employee_response.dart';
 import 'package:backtotrack/data/models/education_history.dart';
 import 'package:backtotrack/data/models/position_history.dart';
 import 'package:backtotrack/data/models/absence_request.dart';
+import 'package:backtotrack/data/models/employees_list_response.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -15,6 +16,7 @@ class ApiManager {
   static const String forgotPasswordPath = '/api/auth/forgot-password';
   static const String profilePath = '/api/employees/me';
   static const String absenceRequestsPath = '/api/absence-requests';
+  static const String employeesPath = '/api/employees';
 
   static String? _extractToken(dynamic data) {
     if (data == null) return null;
@@ -526,6 +528,79 @@ class ApiManager {
       }
     } catch (e) {
       return {'success': false, 'message': 'Connection error: $e'};
+    }
+  }
+
+  static Future<EmployeesListResponse?> getEmployees({
+    String? search,
+    int page = 0,
+    int pageSize = 20,
+  }) async {
+    Uri url = Uri.https(baseUrl, employeesPath, {
+      if (search != null && search.isNotEmpty) 'search': search,
+      'page': page.toString(),
+      'size': pageSize.toString(),
+    });
+    String? token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      return EmployeesListResponse(
+        message: "No authentication token found. Please sign in again.",
+      );
+    }
+
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          String? newToken = await getAccessToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            response = await http.get(
+              url,
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer $newToken",
+              },
+            );
+          }
+        }
+      }
+
+      dynamic data;
+      try {
+        data = jsonDecode(response.body);
+      } catch (_) {
+        data = null;
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (data != null) {
+          return EmployeesListResponse.fromJson(data);
+        } else {
+          return EmployeesListResponse(
+            message: "Invalid response format from server.",
+          );
+        }
+      } else {
+        String msg =
+            (data is Map && (data['message'] != null || data['error'] != null))
+                ? (data['message'] ?? data['error']).toString()
+                : "Server returned error status code: ${response.statusCode}";
+        return EmployeesListResponse(
+          status: response.statusCode.toString(),
+          message: msg,
+        );
+      }
+    } catch (e) {
+      return EmployeesListResponse(message: "Connection exception: $e");
     }
   }
 }
