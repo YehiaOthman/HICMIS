@@ -54,12 +54,16 @@ class EmployeeCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(
-                      name,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: const Color(0xFF1E293B),
+                    Expanded(
+                      child: Text(
+                        name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: const Color(0xFF1E293B),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
