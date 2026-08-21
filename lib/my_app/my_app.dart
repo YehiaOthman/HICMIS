@@ -5,6 +5,7 @@ import 'package:backtotrack/screens/login/forget_password.dart';
 import 'package:backtotrack/screens/login/login_screen.dart';
 import 'package:backtotrack/screens/login/sign_up.dart';
 import 'package:backtotrack/screens/profile/profile_screen.dart';
+import 'package:backtotrack/screens/employees/employees_screen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
           '/check-email': (context) =>  CheckEmailScreen(),
           '/home': (context) =>  HomeScreen(),
           '/profile': (context) =>  ProfileScreen(),
+          '/employees': (context) =>  EmployeesScreen(),
         },
     );
   }

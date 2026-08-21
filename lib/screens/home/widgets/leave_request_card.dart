@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LeaveRequestCard extends StatefulWidget {
+  final num? id;
   final String type;
   final String dateRange;
   final String reason;
   final String status;
   final Color statusColor;
   final IconData icon;
+  final VoidCallback? onDelete;
 
   const LeaveRequestCard({
     super.key,
+    this.id,
     required this.type,
     required this.dateRange,
     required this.reason,
     required this.status,
     required this.statusColor,
     required this.icon,
+    this.onDelete,
   });
 
   @override
@@ -24,7 +28,21 @@ class LeaveRequestCard extends StatefulWidget {
 }
 
 class _LeaveRequestCardState extends State<LeaveRequestCard> {
-  bool _isExpanded = false; // State to track expansion
+  bool _isExpanded = false;
+
+  String _formatAbsenceType(String apiType) {
+    Map<String, String> typeMap = {
+      'ANNUAL_LEAVE': 'Annual Leave',
+      'SICK_LEAVE': 'Sick Leave',
+      'TIME_PERMISSION': 'Time Permission',
+      'MATERNITY_LEAVE': 'Maternity Leave',
+      'PATERNITY_LEAVE': 'Paternity Leave',
+      'EMERGENCY_LEAVE': 'Emergency Leave',
+      'UNPAID_LEAVE': 'Unpaid Leave',
+      'BEREAVEMENT_LEAVE': 'Bereavement Leave',
+    };
+    return typeMap[apiType] ?? apiType;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +61,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Section (Always Visible)
             Row(
               children: [
                 Container(
@@ -59,7 +76,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.type, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(_formatAbsenceType(widget.type), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
                       Text(widget.dateRange, style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
                     ],
                   ),
@@ -76,8 +93,19 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     style: GoogleFonts.poppins(fontSize: 10, fontWeight: FontWeight.bold, color: widget.statusColor),
                   ),
                 ),
+                if (widget.onDelete != null && (widget.status.toLowerCase() == 'pending' || widget.status.toLowerCase() == 'draft')) ...[
+                  const SizedBox(width: 8),
+                  IconButton(
+                    onPressed: widget.onDelete,
+                    icon: const Icon(Icons.delete_outline, color: Color(0xFFEF4444), size: 20),
+                    tooltip: 'Delete Request',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
               ],
             ),
+
             const SizedBox(height: 15),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -92,7 +120,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
             ),
             const SizedBox(height: 10),
 
-            // Toggle Button (View/Hide details)
             GestureDetector(
               onTap: () => setState(() => _isExpanded = !_isExpanded),
               child: Row(
@@ -114,14 +141,12 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
               ),
             ),
 
-            // Expanded Section
             if (_isExpanded) ...[
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 child: Divider(color: Color(0xFFF1F5F9)),
               ),
 
-              // Attachments Section
               _buildSectionTitle('ATTACHMENTS'),
               const SizedBox(height: 8),
               Row(
@@ -137,13 +162,11 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
 
               const SizedBox(height: 20),
 
-              // Workflow Status Section
               _buildSectionTitle('APPROVAL WORKFLOW STATUS'),
               const SizedBox(height: 15),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Status Icon with vertical line
                   Column(
                     children: [
                       Container(
@@ -161,7 +184,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     ],
                   ),
                   const SizedBox(width: 15),
-                  // Manager Details
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +198,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        // Small Inner Status Chip
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
@@ -206,7 +227,6 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
     );
   }
 
-  // Helper for small grey labels
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
