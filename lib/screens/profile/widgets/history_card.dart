@@ -49,7 +49,6 @@ class HistoryCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 15),
             child: Divider(color: Color(0xFFF1F5F9)),
           ),
-          // The inner light grey card
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(15),
