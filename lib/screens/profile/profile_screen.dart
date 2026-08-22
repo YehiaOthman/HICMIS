@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:backtotrack/providers/employee_provider.dart';
@@ -29,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double columnWidth = (MediaQuery.of(context).size.width - 80) / 2;
+    double columnWidth = (1.sw - 90.w) / 2;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
@@ -37,16 +38,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
+        iconTheme: IconThemeData(color: const Color(0xFF475569), size: 22.r),
         leading: Builder(
           builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.black),
+            icon: Icon(Icons.menu, color: Colors.black, size: 22.r),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
         title: Text(
           'My Account Profile',
           style: GoogleFonts.poppins(
-            fontSize: 17,
+            fontSize: 17.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -59,11 +61,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 listen: false,
               ).fetchEmployeeProfile();
             },
-            icon: const Icon(Icons.refresh, color: Colors.black),
+            icon: Icon(Icons.refresh, color: Colors.black, size: 22.r),
           ),
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications_none),
+            icon: Icon(Icons.notifications_none, size: 22.r),
           ),
         ],
       ),
@@ -80,29 +82,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
               employeeProvider.employeeData == null) {
             return Center(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(20.r),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.error_outline,
-                      size: 48,
+                      size: 48.r,
                       color: Colors.redAccent,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Text(
                       employeeProvider.errorMessage!,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         color: Colors.grey[800],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     ElevatedButton.icon(
                       onPressed: () => employeeProvider.fetchEmployeeProfile(),
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
+                      icon: Icon(Icons.refresh, size: 18.r),
+                      label: Text('Retry', style: TextStyle(fontSize: 14.sp)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2353D0),
                         foregroundColor: Colors.white,
@@ -127,35 +129,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20.r),
                     child: Column(
                       children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const CircleAvatar(
-                              radius: 35,
+                            CircleAvatar(
+                              radius: 35.r,
                               backgroundColor: Colors.white,
                               child: Icon(
                                 Icons.person_outline,
-                                size: 35,
-                                color: Color(0xFF94A3B8),
+                                size: 35.r,
+                                color: const Color(0xFF94A3B8),
                               ),
                             ),
-                            const SizedBox(width: 15),
+                            SizedBox(width: 15.w),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Wrap(
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    spacing: 10,
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    spacing: 10.w,
+                                    runSpacing: 4.h,
                                     children: [
                                       Text(
                                         data?.name ?? 'Employee',
                                         style: GoogleFonts.poppins(
-                                          fontSize: 18,
+                                          fontSize: 18.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -165,18 +167,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: 4.h),
                                   _buildStatusChip(
                                     data?.position ?? 'EMPLOYEE',
-                                    Color(0xFF2353D0),
+                                    const Color(0xFF2353D0),
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: 4.h),
                                   Text(
                                     authProvider.username != null
                                         ? '${authProvider.username}@xtra.com'
                                         : 'employee@xtra.com',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 13,
+                                      fontSize: 13.sp,
                                       color: const Color(0xFF64748B),
                                     ),
                                   ),
@@ -185,18 +187,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: 15.h),
 
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.all(20),
+                          padding: EdgeInsets.all(20.r),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(25.r),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.02),
-                                blurRadius: 10,
+                                blurRadius: 10.r,
                               ),
                             ],
                           ),
@@ -206,16 +208,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Text(
                                 'PERSONAL INFORMATION',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.bold,
                                   color: const Color(0xFF2353D0),
                                   letterSpacing: 1.2,
                                 ),
                               ),
-                              const SizedBox(height: 25),
+                              SizedBox(height: 25.h),
                               Wrap(
-                                runSpacing: 20,
-                                spacing: 10,
+                                runSpacing: 20.h,
+                                spacing: 10.w,
                                 children: [
                                   SizedBox(
                                     width: columnWidth,
@@ -309,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 20),
+                              SizedBox(height: 20.h),
                               ProfileInfoTile(
                                 label: 'Job Description',
                                 value: data?.currentJobDescription ?? 'N/A',
@@ -317,7 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20.h),
 
                         if (employeeProvider.educationHistory.isEmpty)
                           HistoryCard(
@@ -328,7 +330,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Text(
                               'No education history records found.',
                               style: GoogleFonts.poppins(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 color: const Color(0xFF64748B),
                               ),
                             ),
@@ -345,7 +347,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Text(
                                     '${edu.degree ?? 'Degree'}${edu.major != null && edu.major!.isNotEmpty ? ' - ${edu.major}' : ''}',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 14,
+                                      fontSize: 14.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -354,16 +356,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     Text(
                                       edu.institution!,
                                       style: GoogleFonts.poppins(
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         color: const Color(0xFF64748B),
                                       ),
                                     ),
-                                  const SizedBox(height: 6),
+                                  SizedBox(height: 6.h),
                                   Text(
                                     '${edu.startDate ?? ''} ${(edu.endDate != null && edu.endDate!.isNotEmpty) ? '- ${edu.endDate}' : ''}'
                                         .trim(),
                                     style: GoogleFonts.poppins(
-                                      fontSize: 11,
+                                      fontSize: 11.sp,
                                       color: const Color(0xFF94A3B8),
                                     ),
                                   ),
@@ -381,7 +383,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Text(
                               'No position history records found.',
                               style: GoogleFonts.poppins(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 color: const Color(0xFF64748B),
                               ),
                             ),
@@ -398,7 +400,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Text(
                                     pos.title ?? 'Position',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 14,
+                                      fontSize: 14.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -407,15 +409,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     Text(
                                       pos.departmentName!,
                                       style: GoogleFonts.poppins(
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         color: const Color(0xFF64748B),
                                       ),
                                     ),
-                                  const SizedBox(height: 6),
+                                  SizedBox(height: 6.h),
                                   Text(
                                     '${pos.startDate ?? ''} ${(pos.endDate != null && pos.endDate!.isNotEmpty) ? '- ${pos.endDate}' : '- Present'}',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 11,
+                                      fontSize: 11.sp,
                                       color: const Color(0xFF94A3B8),
                                     ),
                                   ),
@@ -437,33 +439,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildStatusChip(String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(2),
+        padding: EdgeInsets.all(2.r),
         child: Text(
           text,
           style: GoogleFonts.poppins(
             color: color,
-            fontSize: 10,
+            fontSize: 10.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
     );
   }
-
-  // Widget _buildRoleChip(String text) {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-  //     decoration: BoxDecoration(
-  //       color: const Color(0xFF00C1A3),
-  //       borderRadius: BorderRadius.circular(4),
-  //     ),
-  //     child: Text(text, style: GoogleFonts.poppins(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
-  //   );
-  // }
 }
+

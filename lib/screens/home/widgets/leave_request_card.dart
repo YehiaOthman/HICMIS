@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LeaveRequestCard extends StatefulWidget {
@@ -48,56 +49,57 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      margin: const EdgeInsets.only(bottom: 15),
+      margin: EdgeInsets.only(bottom: 15.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border(
-          left: BorderSide(color: widget.statusColor, width: 4),
+          left: BorderSide(color: widget.statusColor, width: 4.w),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: EdgeInsets.all(15.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10.r),
                   decoration: BoxDecoration(
                     color: const Color(0xFF2353D0).withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: Icon(widget.icon, color: const Color(0xFF2353D0), size: 20),
+                  child: Icon(widget.icon, color: const Color(0xFF2353D0), size: 20.r),
                 ),
-                const SizedBox(width: 15),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_formatAbsenceType(widget.type), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(widget.dateRange, style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
+                      Text(_formatAbsenceType(widget.type), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 15.sp)),
+                      Text(widget.dateRange, style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey)),
                     ],
                   ),
                 ),
+                SizedBox(width: 8.w),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   decoration: BoxDecoration(
                     color: widget.statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(color: widget.statusColor.withOpacity(0.2)),
                   ),
                   child: Text(
                     widget.status.toUpperCase(),
-                    style: GoogleFonts.poppins(fontSize: 10, fontWeight: FontWeight.bold, color: widget.statusColor),
+                    style: GoogleFonts.poppins(fontSize: 10.sp, fontWeight: FontWeight.bold, color: widget.statusColor),
                   ),
                 ),
                 if (widget.onDelete != null && (widget.status.toLowerCase() == 'pending' || widget.status.toLowerCase() == 'draft')) ...[
-                  const SizedBox(width: 8),
+                  SizedBox(width: 6.w),
                   IconButton(
                     onPressed: widget.onDelete,
-                    icon: const Icon(Icons.delete_outline, color: Color(0xFFEF4444), size: 20),
+                    icon: Icon(Icons.delete_outline, color: const Color(0xFFEF4444), size: 20.r),
                     tooltip: 'Delete Request',
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
@@ -106,19 +108,20 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
               ],
             ),
 
-            const SizedBox(height: 15),
+            SizedBox(height: 12.h),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
               decoration: BoxDecoration(
                 color: const Color(0xFFF8FAFC),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
                 'Reason: ${widget.reason}',
-                style: GoogleFonts.poppins(fontSize: 12, color: const Color(0xFF475569)),
+                style: GoogleFonts.poppins(fontSize: 12.sp, color: const Color(0xFF475569)),
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
 
             GestureDetector(
               onTap: () => setState(() => _isExpanded = !_isExpanded),
@@ -126,13 +129,13 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                 children: [
                   Icon(
                       _isExpanded ? Icons.close : Icons.add,
-                      size: 14,
+                      size: 14.r,
                       color: const Color(0xFF2353D0)
                   ),
                   Text(
                     _isExpanded ? ' Hide details' : ' View details',
                     style: GoogleFonts.poppins(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: const Color(0xFF2353D0),
                       fontWeight: FontWeight.w600,
                     ),
@@ -142,35 +145,37 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
             ),
 
             if (_isExpanded) ...[
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: Divider(color: Color(0xFFF1F5F9)),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                child: const Divider(color: Color(0xFFF1F5F9)),
               ),
 
               _buildSectionTitle('ATTACHMENTS'),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Row(
                 children: [
-                  const Icon(Icons.attach_file, size: 16, color: Colors.grey),
-                  const SizedBox(width: 5),
-                  Text(
-                    'Files are securely stored.',
-                    style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF475569)),
+                  Icon(Icons.attach_file, size: 16.r, color: Colors.grey),
+                  SizedBox(width: 5.w),
+                  Expanded(
+                    child: Text(
+                      'Files are securely stored.',
+                      style: GoogleFonts.poppins(fontSize: 12.sp, color: const Color(0xFF475569)),
+                    ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 16.h),
 
               _buildSectionTitle('APPROVAL WORKFLOW STATUS'),
-              const SizedBox(height: 15),
+              SizedBox(height: 12.h),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.all(4.r),
                         decoration: BoxDecoration(
                           color: widget.statusColor.withOpacity(0.1),
                           shape: BoxShape.circle,
@@ -178,42 +183,42 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                         child: Icon(
                             widget.status == 'rejected' ? Icons.close : Icons.check,
                             color: widget.statusColor,
-                            size: 14
+                            size: 14.r
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(width: 15),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         RichText(
                           text: TextSpan(
-                            style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                            style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
                             children: [
                               const TextSpan(text: 'HR Manager ', style: TextStyle(fontWeight: FontWeight.bold)),
-                              TextSpan(text: '(human resources HR)', style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+                              TextSpan(text: '(human resources HR)', style: TextStyle(color: Colors.grey[500], fontSize: 11.sp)),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: 4.h),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                           decoration: BoxDecoration(
                             color: widget.statusColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(4.r),
                             border: Border.all(color: widget.statusColor.withOpacity(0.2)),
                           ),
                           child: Text(
                             widget.status.toUpperCase(),
-                            style: GoogleFonts.poppins(fontSize: 9, fontWeight: FontWeight.bold, color: widget.statusColor),
+                            style: GoogleFonts.poppins(fontSize: 9.sp, fontWeight: FontWeight.bold, color: widget.statusColor),
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: 4.h),
                         Text(
                           'Jul 16, 2026, 12:35 PM',
-                          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+                          style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -231,11 +236,11 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
     return Text(
       title,
       style: GoogleFonts.poppins(
-        fontSize: 10,
+        fontSize: 10.sp,
         fontWeight: FontWeight.bold,
         color: const Color(0xFF94A3B8),
         letterSpacing: 1.1,
       ),
     );
   }
-}
+}

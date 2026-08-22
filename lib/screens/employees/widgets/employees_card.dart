@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EmployeeCard extends StatelessWidget {
@@ -24,16 +25,16 @@ class EmployeeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(15),
+      margin: EdgeInsets.only(bottom: 15.h),
+      padding: EdgeInsets.all(15.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            blurRadius: 10.r,
+            offset: Offset(0, 4.h),
           )
         ],
       ),
@@ -41,14 +42,14 @@ class EmployeeCard extends StatelessWidget {
         children: [
           // Avatar with Initials
           CircleAvatar(
-            radius: 25,
+            radius: 25.r,
             backgroundColor: avatarColor,
             child: Text(
               _getInitials(name),
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14.sp),
             ),
           ),
-          const SizedBox(width: 15),
+          SizedBox(width: 12.w),
           // Info Section
           Expanded(
             child: Column(
@@ -63,43 +64,44 @@ class EmployeeCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           color: const Color(0xFF1E293B),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     // Badge ID
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: Text(
                         '#$id',
-                        style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey),
+                        style: GoogleFonts.poppins(fontSize: 10.sp, color: Colors.grey),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 _buildSmallInfo(Icons.badge_outlined, 'Code: $code'),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 _buildSmallInfo(Icons.business_outlined, department),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 _buildSmallInfo(null, 'Hired: $hireDate'),
               ],
             ),
           ),
+          SizedBox(width: 8.w),
           // View Button
           Container(
             decoration: BoxDecoration(
               color: const Color(0xFF2353D0).withOpacity(0.05),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
             child: IconButton(
-              icon: const Icon(Icons.visibility_outlined, color: Color(0xFF2353D0), size: 20),
+              icon: Icon(Icons.visibility_outlined, color: const Color(0xFF2353D0), size: 20.r),
               onPressed: onViewPressed,
             ),
           ),
@@ -112,12 +114,16 @@ class EmployeeCard extends StatelessWidget {
     return Row(
       children: [
         if (icon != null) ...[
-          Icon(icon, size: 14, color: const Color(0xFFCBD5E1)),
-          const SizedBox(width: 5),
+          Icon(icon, size: 14.r, color: const Color(0xFFCBD5E1)),
+          SizedBox(width: 5.w),
         ],
-        Text(
-          text,
-          style: GoogleFonts.poppins(fontSize: 11, color: const Color(0xFF94A3B8)),
+        Expanded(
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.poppins(fontSize: 11.sp, color: const Color(0xFF94A3B8)),
+          ),
         ),
       ],
     );
@@ -138,4 +144,4 @@ class EmployeeCard extends StatelessWidget {
     
     return initials.isEmpty ? '?' : initials.toUpperCase();
   }
-}
+}

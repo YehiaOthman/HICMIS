@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:backtotrack/screens/home/widgets/app_drawer.dart';
@@ -66,43 +67,46 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
-        iconTheme: const IconThemeData(color: Color(0xFF475569)),
+        iconTheme: IconThemeData(color: const Color(0xFF475569), size: 22.r),
         title: Text(
           'Employee Registry',
-          style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+          style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18.sp),
         ),
       ),
       body: SingleChildScrollView(
         controller: _scrollController,
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Employee Registry', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold)),
-                    Text('Search, view full details and\n onboard personnel.',
-                        style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Employee Registry', style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
+                      Text('Search, view full details and\n onboard personnel.',
+                          style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
+                    ],
+                  ),
                 ),
                 ElevatedButton.icon(
                   onPressed: () {},
-                  icon: const Icon(Icons.add, size: 18),
-                  label: const Text('Onboard'),
+                  icon: Icon(Icons.add, size: 18.r),
+                  label: Text('Onboard', style: TextStyle(fontSize: 13.sp)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2353D0),
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
                   ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 25),
+            SizedBox(height: 25.h),
 
             // Search Bar Row
             Row(
@@ -111,23 +115,24 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)],
+                      borderRadius: BorderRadius.circular(15.r),
+                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10.r)],
                     ),
                     child: TextField(
                       controller: _searchController,
                       onChanged: _onSearchChanged,
+                      style: GoogleFonts.poppins(fontSize: 14.sp),
                       decoration: InputDecoration(
                         hintText: 'Search by name...',
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey, fontSize: 14),
-                        prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                        hintStyle: GoogleFonts.poppins(color: Colors.grey, fontSize: 14.sp),
+                        prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20.r),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                        contentPadding: EdgeInsets.symmetric(vertical: 15.h),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -135,80 +140,80 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                     });
                   },
                   child: Container(
-                    height: 50,
-                    width: 50,
+                    height: 50.r,
+                    width: 50.r,
                     decoration: BoxDecoration(
                       color: _showFilters ? const Color(0xFF2353D0) : Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(color: Colors.grey.shade300),
                     ),
-                    child: Icon(Icons.tune, color: _showFilters ? Colors.white : Colors.grey.shade600),
+                    child: Icon(Icons.tune, color: _showFilters ? Colors.white : Colors.grey.shade600, size: 22.r),
                   ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 15),
+            SizedBox(height: 15.h),
 
             // Filter Section Card
             if (_showFilters)
               Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('FILTER EMPLOYEES',
-                      style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF94A3B8), letterSpacing: 1.1)),
-                  const SizedBox(height: 20),
-                  _buildFilterField('Employee Code', 'e.g. EMP-0042', Icons.badge_outlined),
-                  const SizedBox(height: 15),
-                  _buildFilterField('National ID (NID)', '14-digit NID', Icons.badge_outlined),
-                  const SizedBox(height: 15),
-                  _buildLabel('Department'),
-                  const SizedBox(height: 8),
-                  _buildDropdownField(),
-                  const SizedBox(height: 25),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.refresh, size: 18),
-                          label: const Text('Clear'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF00C1A3),
-                            side: const BorderSide(color: Color(0xFF00C1A3)),
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: EdgeInsets.all(20.r),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.r),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('FILTER EMPLOYEES',
+                        style: GoogleFonts.poppins(fontSize: 11.sp, fontWeight: FontWeight.bold, color: const Color(0xFF94A3B8), letterSpacing: 1.1)),
+                    SizedBox(height: 20.h),
+                    _buildFilterField('Employee Code', 'e.g. EMP-0042', Icons.badge_outlined),
+                    SizedBox(height: 15.h),
+                    _buildFilterField('National ID (NID)', '14-digit NID', Icons.badge_outlined),
+                    SizedBox(height: 15.h),
+                    _buildLabel('Department'),
+                    SizedBox(height: 8.h),
+                    _buildDropdownField(),
+                    SizedBox(height: 25.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {},
+                            icon: Icon(Icons.refresh, size: 18.r),
+                            label: Text('Clear', style: TextStyle(fontSize: 13.sp)),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF00C1A3),
+                              side: const BorderSide(color: Color(0xFF00C1A3)),
+                              padding: EdgeInsets.symmetric(vertical: 14.h),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.filter_alt_outlined, size: 18),
-                          label: const Text('Apply Filters'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2353D0),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            elevation: 0,
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: Icon(Icons.filter_alt_outlined, size: 18.r),
+                            label: Text('Apply Filters', style: TextStyle(fontSize: 13.sp)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF2353D0),
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(vertical: 14.h),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                              elevation: 0,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 25),
+            SizedBox(height: 25.h),
             Consumer<EmployeeProvider>(
               builder: (context, employeeProvider, child) {
                 final allEmployees = employeeProvider.employeesList;
@@ -235,39 +240,39 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                       searchQuery.isEmpty
                           ? (total != null ? '$total employees found' : 'Loading...')
                           : '${filteredEmployees.length} employees found',
-                      style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+                      style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp),
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: 15.h),
 
                     if (isLoading && allEmployees.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40),
-                        child: Center(
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40.h),
+                        child: const Center(
                           child: CircularProgressIndicator(color: Color(0xFF2353D0)),
                         ),
                       )
                     else if (filteredEmployees.isEmpty)
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(30),
+                        padding: EdgeInsets.all(30.r),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Column(
                           children: [
-                            const Icon(Icons.people_outline, size: 48, color: Color(0xFFCBD5E1)),
-                            const SizedBox(height: 10),
+                            Icon(Icons.people_outline, size: 48.r, color: const Color(0xFFCBD5E1)),
+                            SizedBox(height: 10.h),
                             Text(
                               'No Employees Found',
-                              style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
+                              style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
                             ),
-                            const SizedBox(height: 5),
+                            SizedBox(height: 5.h),
                             Text(
                               searchQuery.isEmpty
                                   ? 'No employees available.'
                                   : 'Try adjusting your search or filters.',
-                              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+                              style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey),
                             ),
                           ],
                         ),
@@ -297,9 +302,9 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                             },
                           )),
                           if (isLoading && allEmployees.isNotEmpty)
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Center(
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20.h),
+                              child: const Center(
                                 child: CircularProgressIndicator(color: Color(0xFF2353D0)),
                               ),
                             ),
@@ -331,7 +336,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
 
   // Helper UI methods
   Widget _buildLabel(String text) {
-    return Text(text, style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF475569), fontWeight: FontWeight.w500));
+    return Text(text, style: GoogleFonts.poppins(fontSize: 13.sp, color: const Color(0xFF475569), fontWeight: FontWeight.w500));
   }
 
   Widget _buildFilterField(String label, String hint, IconData icon) {
@@ -339,15 +344,18 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildLabel(label),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextField(
+          style: GoogleFonts.poppins(fontSize: 13.sp),
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: Icon(icon, size: 18, color: const Color(0xFFCBD5E1)),
+            hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey),
+            prefixIcon: Icon(icon, size: 18.r, color: const Color(0xFFCBD5E1)),
             filled: true,
             fillColor: const Color(0xFFF8FAFC),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade200)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey.shade200)),
+            contentPadding: EdgeInsets.all(12.r),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: Colors.grey.shade200)),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: Colors.grey.shade200)),
           ),
         ),
       ],
@@ -356,20 +364,22 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
 
   Widget _buildDropdownField() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: 'All Departments',
           isExpanded: true,
-          items: ['All Departments', 'IT', 'HR'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+          items: ['All Departments', 'IT', 'HR'].map((e) => DropdownMenuItem(value: e, child: Text(e, style: GoogleFonts.poppins(fontSize: 13.sp)))).toList(),
           onChanged: (v) {},
         ),
       ),
     );
   }
 }
+

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:backtotrack/providers/employee_provider.dart';
@@ -30,13 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Delete Leave Request', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18)),
-        content: Text('Are you sure you want to delete this leave request?', style: GoogleFonts.poppins(fontSize: 14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        title: Text('Delete Leave Request', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp)),
+        content: Text('Are you sure you want to delete this leave request?', style: GoogleFonts.poppins(fontSize: 14.sp)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Cancel', style: GoogleFonts.poppins(color: const Color(0xFF64748B))),
+            child: Text('Cancel', style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(res['message'] ?? 'Deleted', style: GoogleFonts.poppins()),
+                    content: Text(res['message'] ?? 'Deleted', style: GoogleFonts.poppins(fontSize: 14.sp)),
                     backgroundColor: res['success'] ? const Color(0xFF22C55E) : Colors.redAccent,
                   ),
                 );
@@ -55,9 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFEF4444),
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
             ),
-            child: Text('Delete', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+            child: Text('Delete', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14.sp)),
           ),
         ],
       ),
@@ -95,16 +96,16 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
-        iconTheme: const IconThemeData(color: Color(0xFF475569)),
+        iconTheme: IconThemeData(color: const Color(0xFF475569), size: 22.r),
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(color: const Color(0xFF2353D0), borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.home_filled, color: Colors.white, size: 20),
+              padding: EdgeInsets.all(5.r),
+              decoration: BoxDecoration(color: const Color(0xFF2353D0), borderRadius: BorderRadius.circular(8.r)),
+              child: Icon(Icons.home_filled, color: Colors.white, size: 20.r),
             ),
-            const SizedBox(width: 10),
-            Text('HICIMS', style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
+            SizedBox(width: 10.w),
+            Text('HICIMS', style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18.sp)),
           ],
         ),
         actions: [
@@ -112,16 +113,17 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Provider.of<EmployeeProvider>(context, listen: false).fetchMyAbsenceRequests();
             },
-            icon: const Icon(Icons.refresh, color: Colors.black),
+            icon: Icon(Icons.refresh, color: Colors.black, size: 22.r),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.notifications_none, size: 22.r)),
           GestureDetector(
             onTap: () => Navigator.pushNamed(context, '/profile'),
-            child: const Padding(
-              padding: EdgeInsets.only(right: 15),
+            child: Padding(
+              padding: EdgeInsets.only(right: 15.w),
               child: CircleAvatar(
-                backgroundColor: Color(0xFFF1F5F9),
-                child: Icon(Icons.person_outline, color: Colors.grey),
+                radius: 18.r,
+                backgroundColor: const Color(0xFFF1F5F9),
+                child: Icon(Icons.person_outline, color: Colors.grey, size: 20.r),
               ),
             ),
           ),
@@ -137,19 +139,21 @@ class _HomeScreenState extends State<HomeScreen> {
             onRefresh: () => employeeProvider.fetchMyAbsenceRequests(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20.r),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Leaves & Absences', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold)),
-                          Text('Track entitlements and requests.', style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Leaves & Absences', style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
+                            Text('Track entitlements and requests.', style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
+                          ],
+                        ),
                       ),
                       if (!isHR || _selectedTabIndex == 0)
                         ElevatedButton.icon(
@@ -159,23 +163,24 @@ class _HomeScreenState extends State<HomeScreen> {
                               builder: (context) => const NewLeaveRequestDialog(),
                             );
                           },
-                          icon: const Icon(Icons.add, size: 18),
-                          label: const Text('Request'),
+                          icon: Icon(Icons.add, size: 18.r),
+                          label: Text('Request', style: TextStyle(fontSize: 13.sp)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2353D0),
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
                           ),
                         ),
                     ],
                   ),
-                  const SizedBox(height: 25),
+                  SizedBox(height: 25.h),
                   
                   if (isHR)
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Row(
                         children: [
@@ -183,15 +188,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: GestureDetector(
                               onTap: () => setState(() => _selectedTabIndex = 0),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: EdgeInsets.symmetric(vertical: 12.h),
                                 decoration: BoxDecoration(
                                   color: _selectedTabIndex == 0 ? const Color(0xFF2353D0) : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 child: Text(
                                   'My Requests',
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
+                                    fontSize: 13.sp,
                                     color: _selectedTabIndex == 0 ? Colors.white : Colors.grey[600],
                                     fontWeight: _selectedTabIndex == 0 ? FontWeight.w600 : FontWeight.w500,
                                   ),
@@ -203,15 +209,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: GestureDetector(
                               onTap: () => setState(() => _selectedTabIndex = 1),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: EdgeInsets.symmetric(vertical: 12.h),
                                 decoration: BoxDecoration(
                                   color: _selectedTabIndex == 1 ? const Color(0xFF2353D0) : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 child: Text(
                                   'Pending Requests',
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
+                                    fontSize: 13.sp,
                                     color: _selectedTabIndex == 1 ? Colors.white : Colors.grey[600],
                                     fontWeight: _selectedTabIndex == 1 ? FontWeight.w600 : FontWeight.w500,
                                   ),
@@ -223,23 +230,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         '${(isHR && _selectedTabIndex == 1 ? pendingRequests : requests).length} requests found',
-                        style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+                        style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
 
                   if (employeeProvider.isAbsenceLoading && requests.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40),
-                      child: Center(
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40.h),
+                      child: const Center(
                         child: CircularProgressIndicator(color: Color(0xFF2353D0)),
                       ),
                     )
@@ -247,25 +254,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   else if ((isHR && _selectedTabIndex == 1 ? pendingRequests : requests).isEmpty)
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(30),
+                      padding: EdgeInsets.all(30.r),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Column(
                         children: [
-                          const Icon(Icons.inbox_outlined, size: 48, color: Color(0xFFCBD5E1)),
-                          const SizedBox(height: 10),
+                          Icon(Icons.inbox_outlined, size: 48.r, color: const Color(0xFFCBD5E1)),
+                          SizedBox(height: 10.h),
                           Text(
                             isHR && _selectedTabIndex == 1 ? 'No Pending Requests' : 'No Leave Requests Yet',
-                            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
+                            style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
                           ),
-                          const SizedBox(height: 5),
+                          SizedBox(height: 5.h),
                           Text(
                             isHR && _selectedTabIndex == 1 
                               ? 'There are no pending requests to review.' 
                               : 'Click "Request" to submit a new leave application.',
-                            style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
+                            style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -293,3 +300,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+

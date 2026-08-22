@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomPasswordTextFiled extends StatefulWidget {
@@ -34,46 +35,46 @@ class _CustomPasswordTextFiledState extends State<CustomPasswordTextFiled> {
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             color: const Color(0xFF94A3B8),
-            fontSize: 11,
+            fontSize: 11.sp,
             letterSpacing: 1.1,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           obscureText: _isObscured,
           controller: widget.controller,
           validator: widget.validator,
-          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500),
+          style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             filled: true,
             fillColor: const Color(0xFFF8FAFC),
-            prefixIcon: Icon(widget.icon, color: Colors.grey.withOpacity(0.5), size: 20),
+            prefixIcon: Icon(widget.icon, color: Colors.grey.withOpacity(0.5), size: 20.r),
             suffixIcon: IconButton(
               icon: Icon(
-                _isObscured ? Icons. visibility_off_outlined: Icons.visibility_outlined,
+                _isObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                 color: Colors.grey.withOpacity(0.5),
-                size: 20,
+                size: 20.r,
               ),
               onPressed: () => setState(() => _isObscured = !_isObscured),
             ),
             hintText: widget.title,
             hintStyle: GoogleFonts.poppins(
               color: Colors.grey.withOpacity(0.5),
-              fontSize: 14,
+              fontSize: 14.sp,
             ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 16),
+            contentPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15.r),
               borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15.r),
               borderSide: const BorderSide(color: Color(0xFF2353D0), width: 1.5),
             ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r)),
           ),
         ),
       ],
     );
   }
-}
+}

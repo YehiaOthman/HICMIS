@@ -1,5 +1,6 @@
 import 'package:backtotrack/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'widgets/custom_text_filed.dart';
@@ -23,7 +24,7 @@ class LoginScreen extends StatelessWidget {
         title: Text(
           'Sign In',
           style: GoogleFonts.poppins(
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -33,31 +34,31 @@ class LoginScreen extends StatelessWidget {
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            padding: EdgeInsets.symmetric(horizontal: 25.w),
             child: Column(
               children: [
-                const SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 const AuthHeader(
                   icon: Icons.person_outline,
                   title: 'Welcome Back',
                   subtitle:
                       'Sign in to access your employee dashboard and account details.',
-                  boxColor: Color(0xFF00C1A3),
+                  boxColor: Color(0xFF2353D0),
                 ),
 
-                const SizedBox(height: 35),
+                SizedBox(height: 35.h),
 
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(25.r),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.03),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
+                        blurRadius: 15.r,
+                        offset: Offset(0, 8.h),
                       ),
                     ],
                   ),
@@ -70,7 +71,7 @@ class LoginScreen extends StatelessWidget {
                         controller: userController,
                         icon: Icons.person_outline,
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       CustomPasswordTextFiled(
                         label: 'Password',
                         title: 'Enter your password',
@@ -89,12 +90,12 @@ class LoginScreen extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               color: const Color(0xFF2353D0),
                               fontWeight: FontWeight.w600,
-                              fontSize: 13,
+                              fontSize: 13.sp,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10.h),
 
                       PrimaryButton(
                         text: 'Sign In',
@@ -106,7 +107,7 @@ class LoginScreen extends StatelessWidget {
                               SnackBar(
                                 content: Text(
                                   'Please fill all fields',
-                                  style: GoogleFonts.poppins(color: Colors.white),
+                                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp),
                                 ),
                                 backgroundColor: const Color(0xFF2353D0),
                               ),
@@ -131,7 +132,7 @@ class LoginScreen extends StatelessWidget {
                                 SnackBar(
                                   content: Text(
                                     authProvider.errorMessage!,
-                                    style: GoogleFonts.poppins(color: Colors.white),
+                                    style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp),
                                   ),
                                   backgroundColor: const Color(0xFF2353D0),
                                 ),
@@ -145,14 +146,15 @@ class LoginScreen extends StatelessWidget {
                 ),
 
 
-                const SizedBox(height: 35),
+                SizedBox(height: 35.h),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text(
                       "Don't have an account? ",
-                      style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+                      style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -161,15 +163,15 @@ class LoginScreen extends StatelessWidget {
                       child: Text(
                         "Create Account",
                         style: GoogleFonts.poppins(
-                          color: Color(0xFF2353D0),
+                          color: const Color(0xFF2353D0),
                           fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                          fontSize: 13.sp,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
               ],
             ),
           );
@@ -178,3 +180,4 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
+
