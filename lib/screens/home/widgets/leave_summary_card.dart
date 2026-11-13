@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LeaveSummaryCard extends StatelessWidget {
@@ -18,16 +19,16 @@ class LeaveSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 110,
-      padding: const EdgeInsets.all(15),
+      width: 110.w,
+      padding: EdgeInsets.all(15.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            blurRadius: 10.r,
+            offset: Offset(0, 5.h),
           )
         ],
       ),
@@ -37,16 +38,16 @@ class LeaveSummaryCard extends StatelessWidget {
           Text(
             title.toUpperCase(),
             style: GoogleFonts.poppins(
-              fontSize: 10,
+              fontSize: 10.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF94A3B8),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             value,
             style: GoogleFonts.poppins(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
               color: color,
             ),
@@ -54,7 +55,7 @@ class LeaveSummaryCard extends StatelessWidget {
           Text(
             '/ $total days left',
             style: GoogleFonts.poppins(
-              fontSize: 10,
+              fontSize: 10.sp,
               color: Colors.grey[400],
             ),
           ),
@@ -62,4 +63,4 @@ class LeaveSummaryCard extends StatelessWidget {
       ),
     );
   }
-}
+}
