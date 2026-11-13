@@ -43,6 +43,7 @@ class AuthProvider with ChangeNotifier {
   bool get isLoading => _status == AuthStatus.loading;
   String? get userRole => _userRole;
   bool get isHR => _userRole == 'hr';
+  bool get isManager => _userRole == 'manager';
   bool get isEmployee => _userRole == 'employee';
 
   Future<void> _extractUserRoleFromToken() async {
@@ -58,6 +59,8 @@ class AuthProvider with ChangeNotifier {
               final roles = clientData['roles'] as List;
               if (roles.contains('hr')) {
                 _userRole = 'hr';
+              } else if (roles.contains('manager')) {
+                _userRole = 'manager';
               } else if (roles.contains('employee')) {
                 _userRole = 'employee';
               }

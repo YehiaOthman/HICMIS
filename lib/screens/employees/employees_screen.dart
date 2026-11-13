@@ -68,10 +68,17 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
         backgroundColor: Colors.white,
         elevation: 0.5,
         iconTheme: IconThemeData(color: const Color(0xFF475569), size: 22.r),
-        title: Text(
-          'Employee Registry',
-          style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18.sp),
-        ),
+        title: Row(
+      children: [
+      Container(
+      padding: EdgeInsets.all(5.r),
+      decoration: BoxDecoration(color: const Color(0xFF2353D0), borderRadius: BorderRadius.circular(8.r)),
+      child: Icon(Icons.home_filled, color: Colors.white, size: 20.r),
+    ),
+    SizedBox(width: 10.w),
+    Text('HICMIS', style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18.sp)),
+    ],
+    ),
       ),
       body: SingleChildScrollView(
         controller: _scrollController,
@@ -92,17 +99,17 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                     ],
                   ),
                 ),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.add, size: 18.r),
-                  label: Text('Onboard', style: TextStyle(fontSize: 13.sp)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2353D0),
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
-                  ),
-                ),
+                // ElevatedButton.icon(
+                //   onPressed: () {},
+                //   icon: Icon(Icons.add, size: 18.r),
+                //   label: Text('Onboard', style: TextStyle(fontSize: 13.sp)),
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: const Color(0xFF2353D0),
+                //     foregroundColor: Colors.white,
+                //     padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
+                //   ),
+                // ),
               ],
             ),
 

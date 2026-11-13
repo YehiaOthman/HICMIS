@@ -45,14 +45,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        title: Text(
-          'My Account Profile',
-          style: GoogleFonts.poppins(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
+        title:  Row(
+      children: [
+      Container(
+      padding: EdgeInsets.all(5.r),
+      decoration: BoxDecoration(color: const Color(0xFF2353D0), borderRadius: BorderRadius.circular(8.r)),
+      child: Icon(Icons.home_filled, color: Colors.white, size: 20.r),
+    ),
+    SizedBox(width: 10.w),
+    Text('HICMIS', style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18.sp)),
+    ],
+    ),
         actions: [
           IconButton(
             onPressed: () {

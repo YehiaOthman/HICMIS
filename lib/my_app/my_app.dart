@@ -34,12 +34,12 @@ class MyApp extends StatelessWidget {
           initialRoute: '/',
             routes: {
               '/': (context) => LoginScreen(),
-              '/signup': (context) => SignUpScreen(),
-              '/forgot': (context) => ForgotPasswordScreen(),
+              // '/signup': (context) => SignUpScreen(),
+              // '/forgot': (context) => ForgotPasswordScreen(),
               '/check-email': (context) =>  CheckEmailScreen(),
-              '/home': (context) =>  const HomeScreen(),
-              '/profile': (context) =>  const ProfileScreen(),
-              '/employees': (context) =>  const EmployeesScreen(),
+              '/home': (context) =>   HomeScreen(),
+              '/profile': (context) =>   ProfileScreen(),
+              '/employees': (context) =>   EmployeesScreen(),
             },
         );
       },

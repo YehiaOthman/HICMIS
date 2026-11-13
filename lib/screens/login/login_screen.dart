@@ -79,23 +79,23 @@ class LoginScreen extends StatelessWidget {
                         controller: passController,
                         icon: Icons.lock_outline,
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/forgot');
-                          },
-                          child: Text(
-                            'Forgot Password?',
-                            style: GoogleFonts.poppins(
-                              color: const Color(0xFF2353D0),
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13.sp,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10.h),
+                      // Align(
+                      //   alignment: Alignment.centerRight,
+                      //   child: TextButton(
+                      //     onPressed: () {
+                      //       Navigator.pushNamed(context, '/forgot');
+                      //     },
+                      //     child: Text(
+                      //       'Forgot Password?',
+                      //       style: GoogleFonts.poppins(
+                      //         color: const Color(0xFF2353D0),
+                      //         fontWeight: FontWeight.w600,
+                      //         fontSize: 13.sp,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      SizedBox(height: 30.h),
 
                       PrimaryButton(
                         text: 'Sign In',
@@ -146,32 +146,32 @@ class LoginScreen extends StatelessWidget {
                 ),
 
 
-                SizedBox(height: 35.h),
+                // SizedBox(height: 35.h),
 
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account? ",
-                      style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      child: Text(
-                        "Create Account",
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF2353D0),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13.sp,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30.h),
+                // Wrap(
+                //   alignment: WrapAlignment.center,
+                //   crossAxisAlignment: WrapCrossAlignment.center,
+                //   children: [
+                //     Text(
+                //       "Don't have an account? Contact your HR administrator.",
+                //       style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp),
+                //     ),
+                //     GestureDetector(
+                //       onTap: () {
+                //         Navigator.pushNamed(context, '/signup');
+                //       },
+                //       child: Text(
+                //         "Create Account",
+                //         style: GoogleFonts.poppins(
+                //           color: const Color(0xFF2353D0),
+                //           fontWeight: FontWeight.bold,
+                //           fontSize: 13.sp,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // SizedBox(height: 30.h),
               ],
             ),
           );

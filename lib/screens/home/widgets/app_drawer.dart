@@ -12,7 +12,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    final isHR = authProvider.isHR;
+    final isHR = authProvider.isHR || authProvider.isManager;
 
     return Drawer(
       backgroundColor: Colors.white,
@@ -41,7 +41,7 @@ class AppDrawer extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('HICIMS', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp)),
+                        Text('HICMIS', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp)),
                         Text('HR SYSTEM', style: GoogleFonts.poppins(fontSize: 10.sp, color: Colors.grey, letterSpacing: 1.1)),
                       ],
                     ),
@@ -189,4 +189,4 @@ class AppDrawer extends StatelessWidget {
       ),
     );
   }
-}
+}

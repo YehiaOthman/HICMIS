@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Icon(Icons.home_filled, color: Colors.white, size: 20.r),
             ),
             SizedBox(width: 10.w),
-            Text('HICIMS', style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18.sp)),
+            Text('HICMIS', style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18.sp)),
           ],
         ),
         actions: [
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer2<EmployeeProvider, AuthProvider>(
         builder: (context, employeeProvider, authProvider, child) {
           final requests = employeeProvider.absenceRequests;
-          final isHR = authProvider.isHR;
+          final isHR = authProvider.isHR || authProvider.isManager;
           final pendingRequests = requests.where((req) => req.status?.toLowerCase() == 'pending').toList();
 
           return RefreshIndicator(
