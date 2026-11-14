@@ -12,6 +12,7 @@ class AttendanceProvider with ChangeNotifier {
   num? _totalPages;
   DateTime _selectedDate = DateTime.now();
   String? _currentSearch;
+  int _requestId = 0;
 
   List<AttendanceRecord> get records => _records;
   bool get isLoading => _isLoading;
@@ -34,6 +35,7 @@ class AttendanceProvider with ChangeNotifier {
     }
     _currentSearch = search;
 
+    final requestId = ++_requestId;
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -45,6 +47,7 @@ class AttendanceProvider with ChangeNotifier {
         page: _currentPage,
         pageSize: _pageSize,
       );
+      if (requestId != _requestId) return;
 
       if (response != null && response.content != null) {
         if (reset) {
@@ -59,11 +62,27 @@ class AttendanceProvider with ChangeNotifier {
         _error = response?.message ?? 'Failed to fetch attendance records';
       }
     } catch (e) {
-      _error = 'Error loading attendance records: $e';
+      if (requestId == _requestId) {
+        _error = 'Error loading attendance records: $e';
+      }
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (requestId == _requestId) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
+  }
+
+  void clear() {
+    _requestId++;
+    _records = [];
+    _isLoading = false;
+    _error = null;
+    _currentPage = 0;
+    _totalRecords = null;
+    _totalPages = null;
+    _selectedDate = DateTime.now();
+    _currentSearch = null;
   }
 
   String _formatDate(DateTime date) {

@@ -65,15 +65,15 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
       ),
       body: Consumer<EmployeeProvider>(
         builder: (context, employeeProvider, child) {
-          if (employeeProvider.isLoading &&
-              employeeProvider.employeeData == null) {
+          if (employeeProvider.isSelectedLoading &&
+              employeeProvider.selectedEmployee == null) {
             return const Center(
               child: CircularProgressIndicator(color: Color(0xFF2353D0)),
             );
           }
 
-          if (employeeProvider.errorMessage != null &&
-              employeeProvider.employeeData == null) {
+          if (employeeProvider.selectedError != null &&
+              employeeProvider.selectedEmployee == null) {
             return Center(
               child: Padding(
                 padding: EdgeInsets.all(20.r),
@@ -87,7 +87,7 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
                     ),
                     SizedBox(height: 12.h),
                     Text(
-                      employeeProvider.errorMessage!,
+                      employeeProvider.selectedError!,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         fontSize: 14.sp,
@@ -110,7 +110,7 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
             );
           }
 
-          final data = employeeProvider.employeeData;
+          final data = employeeProvider.selectedEmployee;
 
           return RefreshIndicator(
             onRefresh: () => employeeProvider.fetchEmployeeById(widget.employeeId),
@@ -296,7 +296,7 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
                         ),
                         SizedBox(height: 20.h),
 
-                        if (employeeProvider.educationHistory.isEmpty)
+                        if (employeeProvider.selectedEducationHistory.isEmpty)
                           HistoryCard(
                             icon: Icons.school_outlined,
                             title: 'Education History',
@@ -311,7 +311,7 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
                             ),
                           )
                         else
-                          ...employeeProvider.educationHistory.map(
+                          ...employeeProvider.selectedEducationHistory.map(
                             (edu) => HistoryCard(
                               icon: Icons.school_outlined,
                               title: 'Education History',
@@ -349,7 +349,7 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
                             ),
                           ),
 
-                        if (employeeProvider.positionHistory.isEmpty)
+                        if (employeeProvider.selectedPositionHistory.isEmpty)
                           HistoryCard(
                             icon: Icons.work_outline,
                             title: 'Position History',
@@ -364,7 +364,7 @@ class _EmployeeDetailScreenState extends State<EmployeeDetailScreen> {
                             ),
                           )
                         else
-                          ...employeeProvider.positionHistory.map(
+                          ...employeeProvider.selectedPositionHistory.map(
                             (pos) => HistoryCard(
                               icon: Icons.work_outline,
                               title: 'Position History',

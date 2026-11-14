@@ -173,8 +173,6 @@ class AuthProvider with ChangeNotifier {
       _username = username;
       notifyListeners();
       await _extractUserRoleFromToken();
-      await fetchProfile();
-      await fetchMyAbsenceRequests();
       return true;
     } else {
       _status = AuthStatus.error;
@@ -229,8 +227,6 @@ class AuthProvider with ChangeNotifier {
       _status = AuthStatus.authenticated;
       notifyListeners();
       await _extractUserRoleFromToken();
-      await fetchProfile();
-      await fetchMyAbsenceRequests();
       return true;
     }
     _status = AuthStatus.unauthenticated;

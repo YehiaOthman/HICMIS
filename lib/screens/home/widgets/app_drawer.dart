@@ -3,6 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:backtotrack/providers/auth_provider.dart';
+import 'package:backtotrack/providers/employee_provider.dart';
+import 'package:backtotrack/providers/attendance_provider.dart';
+import 'package:backtotrack/providers/daily_attendance_provider.dart';
+import 'package:backtotrack/providers/staff_evaluation_provider.dart';
 
 class AppDrawer extends StatelessWidget {
   final String currentRoute;
@@ -170,16 +174,18 @@ class AppDrawer extends StatelessWidget {
         color: isActive ? const Color(0xFF2353D0).withOpacity(0.08) : Colors.transparent,
         borderRadius: BorderRadius.circular(15.r),
       ),
-      child: ListTile(
-        onTap: onTap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
-        leading: Icon(icon, color: isActive ? const Color(0xFF2353D0) : Colors.grey, size: 22.r),
-        title: Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 14.sp,
-            color: isActive ? const Color(0xFF2353D0) : const Color(0xFF475569),
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+      child: Builder(
+        builder: (context) => ListTile(
+          onTap: isActive ? () => Navigator.pop(context) : onTap,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
+          leading: Icon(icon, color: isActive ? const Color(0xFF2353D0) : Colors.grey, size: 22.r),
+          title: Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              color: isActive ? const Color(0xFF2353D0) : const Color(0xFF475569),
+              fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+            ),
           ),
         ),
       ),
@@ -209,13 +215,20 @@ class AppDrawer extends StatelessWidget {
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
-              await context.read<AuthProvider>().logout();
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/',
-                (route) => false,
-              );
+              final navigator = Navigator.of(context);
+              final authProvider = context.read<AuthProvider>();
+              final employeeProvider = context.read<EmployeeProvider>();
+              final attendanceProvider = context.read<AttendanceProvider>();
+              final dailyAttendanceProvider = context.read<DailyAttendanceProvider>();
+              final staffEvaluationProvider = context.read<StaffEvaluationProvider>();
+              navigator.pop();
+              await authProvider.logout();
+              employeeProvider.clearEmployeeData();
+              employeeProvider.clearEmployeesList();
+              attendanceProvider.clear();
+              dailyAttendanceProvider.clear();
+              staffEvaluationProvider.clear();
+              navigator.pushNamedAndRemoveUntil('/', (route) => false);
             },
             child: Text(
               'Logout',

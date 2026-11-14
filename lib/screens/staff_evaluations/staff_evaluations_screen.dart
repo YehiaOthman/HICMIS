@@ -107,7 +107,10 @@ class _EvaluationsList extends StatefulWidget {
   State<_EvaluationsList> createState() => _EvaluationsListState();
 }
 
-class _EvaluationsListState extends State<_EvaluationsList> {
+class _EvaluationsListState extends State<_EvaluationsList> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -145,6 +148,7 @@ class _EvaluationsListState extends State<_EvaluationsList> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<StaffEvaluationProvider>(
       builder: (context, provider, child) {
         final items = provider.evaluations;
@@ -319,7 +323,10 @@ class _NewEvaluationForm extends StatefulWidget {
   State<_NewEvaluationForm> createState() => _NewEvaluationFormState();
 }
 
-class _NewEvaluationFormState extends State<_NewEvaluationForm> {
+class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   String _form = StaffEvaluationProvider.allForms.first;
   num? _employeeId;
   DateTime _evaluationDate = DateTime.now();
@@ -443,6 +450,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<StaffEvaluationProvider>(
       builder: (context, provider, child) {
         if (provider.isFormDataLoading && provider.formDefinitions.isEmpty) {

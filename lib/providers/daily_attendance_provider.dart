@@ -20,6 +20,7 @@ class DailyAttendanceProvider with ChangeNotifier {
   num? _departmentId;
   final Set<String> _selectedStatuses = {};
   List<Department> _departments = [];
+  int _requestId = 0;
 
   DailyAttendanceReport? get report => _report;
   bool get isLoading => _isLoading;
@@ -59,6 +60,7 @@ class DailyAttendanceProvider with ChangeNotifier {
   }
 
   Future<void> fetchReport() async {
+    final requestId = ++_requestId;
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -69,6 +71,7 @@ class DailyAttendanceProvider with ChangeNotifier {
         departmentId: _departmentId,
         statuses: _selectedStatuses.toList(),
       );
+      if (requestId != _requestId) return;
 
       if (response != null && response.data != null) {
         _report = response.data;
@@ -77,12 +80,26 @@ class DailyAttendanceProvider with ChangeNotifier {
         _error = response?.message ?? 'Failed to fetch daily attendance';
       }
     } catch (e) {
-      _report = null;
-      _error = 'Error loading daily attendance: $e';
+      if (requestId == _requestId) {
+        _report = null;
+        _error = 'Error loading daily attendance: $e';
+      }
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (requestId == _requestId) {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
+  }
+
+  void clear() {
+    _requestId++;
+    _report = null;
+    _isLoading = false;
+    _error = null;
+    _selectedDate = DateTime.now();
+    _departmentId = null;
+    _selectedStatuses.clear();
   }
 
   String _formatDate(DateTime date) {
