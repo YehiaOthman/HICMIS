@@ -4,6 +4,9 @@ import 'package:backtotrack/data/models/education_history.dart';
 import 'package:backtotrack/data/models/position_history.dart';
 import 'package:backtotrack/data/models/absence_request.dart';
 import 'package:backtotrack/data/models/employees_list_response.dart';
+import 'package:backtotrack/data/models/attendance_records_response.dart';
+import 'package:backtotrack/data/models/daily_attendance_report.dart';
+import 'package:backtotrack/data/models/department.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -17,6 +20,9 @@ class ApiManager {
   static const String profilePath = '/api/employees/me';
   static const String absenceRequestsPath = '/api/absence-requests';
   static const String employeesPath = '/api/employees';
+  static const String attendanceRecordsPath = '/api/attendance/records';
+  static const String dailyAttendanceReportPath = '/api/attendance/reports/daily';
+  static const String departmentsPath = '/api/departments';
 
   static String? _extractToken(dynamic data) {
     if (data == null) return null;
@@ -666,6 +672,198 @@ class ApiManager {
       }
     } catch (e) {
       return EmployeeResponse(message: "Connection exception: $e");
+    }
+  }
+
+  static Future<AttendanceRecordsResponse?> getAttendanceRecords({
+    required String date,
+    String? search,
+    int page = 0,
+    int pageSize = 20,
+  }) async {
+    Uri url = Uri.https(baseUrl, attendanceRecordsPath, {
+      'date': date,
+      if (search != null && search.isNotEmpty) 'search': search,
+      'page': page.toString(),
+      'size': pageSize.toString(),
+    });
+    String? token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      return AttendanceRecordsResponse(
+        message: "No authentication token found. Please sign in again.",
+      );
+    }
+
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          String? newToken = await getAccessToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            response = await http.get(
+              url,
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer $newToken",
+              },
+            );
+          }
+        }
+      }
+
+      dynamic data;
+      try {
+        data = jsonDecode(response.body);
+      } catch (_) {
+        data = null;
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (data != null) {
+          return AttendanceRecordsResponse.fromJson(data);
+        } else {
+          return AttendanceRecordsResponse(
+            message: "Invalid response format from server.",
+          );
+        }
+      } else {
+        String msg =
+            (data is Map && (data['message'] != null || data['error'] != null))
+                ? (data['message'] ?? data['error']).toString()
+                : "Server returned error status code: ${response.statusCode}";
+        return AttendanceRecordsResponse(
+          status: response.statusCode.toString(),
+          message: msg,
+        );
+      }
+    } catch (e) {
+      return AttendanceRecordsResponse(message: "Connection exception: $e");
+    }
+  }
+
+  static Future<DailyAttendanceReportResponse?> getDailyAttendanceReport({
+    required String date,
+    num? departmentId,
+    List<String>? statuses,
+  }) async {
+    Uri url = Uri.https(baseUrl, dailyAttendanceReportPath, {
+      'date': date,
+      if (departmentId != null) 'departmentId': departmentId.toString(),
+      if (statuses != null && statuses.isNotEmpty) 'statuses': statuses,
+    });
+    String? token = await getAccessToken();
+
+    if (token == null || token.isEmpty) {
+      return DailyAttendanceReportResponse(
+        message: "No authentication token found. Please sign in again.",
+      );
+    }
+
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          String? newToken = await getAccessToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            response = await http.get(
+              url,
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer $newToken",
+              },
+            );
+          }
+        }
+      }
+
+      dynamic data;
+      try {
+        data = jsonDecode(response.body);
+      } catch (_) {
+        data = null;
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (data != null) {
+          return DailyAttendanceReportResponse.fromJson(data);
+        } else {
+          return DailyAttendanceReportResponse(
+            message: "Invalid response format from server.",
+          );
+        }
+      } else {
+        String msg =
+            (data is Map && (data['message'] != null || data['error'] != null))
+                ? (data['message'] ?? data['error']).toString()
+                : "Server returned error status code: ${response.statusCode}";
+        return DailyAttendanceReportResponse(
+          status: response.statusCode.toString(),
+          message: msg,
+        );
+      }
+    } catch (e) {
+      return DailyAttendanceReportResponse(message: "Connection exception: $e");
+    }
+  }
+
+  static Future<List<Department>> getDepartments() async {
+    Uri url = Uri.https(baseUrl, departmentsPath);
+    String? token = await getAccessToken();
+    if (token == null || token.isEmpty) return [];
+
+    try {
+      var response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 401) {
+        bool refreshed = await refreshToken();
+        if (refreshed) {
+          String? newToken = await getAccessToken();
+          if (newToken != null && newToken.isNotEmpty) {
+            response = await http.get(
+              url,
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer $newToken",
+              },
+            );
+          }
+        }
+      }
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data is Map && data['data'] is List) {
+          return (data['data'] as List)
+              .map((item) => Department.fromJson(item))
+              .toList();
+        }
+      }
+      return [];
+    } catch (e) {
+      return [];
     }
   }
 }

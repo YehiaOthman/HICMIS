@@ -57,10 +57,10 @@ class AuthProvider with ChangeNotifier {
             final clientData = resourceAccess['HICMIS_BE_CLIENT'] as Map;
             if (clientData['roles'] is List) {
               final roles = clientData['roles'] as List;
-              if (roles.contains('hr')) {
-                _userRole = 'hr';
-              } else if (roles.contains('manager')) {
+              if (roles.contains('manager')) {
                 _userRole = 'manager';
+              } else if (roles.contains('hr')) {
+                _userRole = 'hr';
               } else if (roles.contains('employee')) {
                 _userRole = 'employee';
               }

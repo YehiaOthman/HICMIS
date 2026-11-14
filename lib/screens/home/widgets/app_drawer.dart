@@ -13,6 +13,7 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final isHR = authProvider.isHR || authProvider.isManager;
+    final isManager = authProvider.isManager;
 
     return Drawer(
       backgroundColor: Colors.white,
@@ -86,6 +87,28 @@ class AppDrawer extends StatelessWidget {
                         onTap: () {
                           Navigator.pop(context);
                           Navigator.pushReplacementNamed(context, '/employees');
+                        },
+                      ),
+                    if (isManager)
+                      _drawerItem(
+                        icon: Icons.access_time,
+                        label: "Attendance",
+                        route: '/attendance',
+                        currentRoute: currentRoute,
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(context, '/attendance');
+                        },
+                      ),
+                    if (isManager)
+                      _drawerItem(
+                        icon: Icons.event_note_outlined,
+                        label: "Daily Attendance",
+                        route: '/daily-attendance',
+                        currentRoute: currentRoute,
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(context, '/daily-attendance');
                         },
                       ),
                     _drawerItem(
