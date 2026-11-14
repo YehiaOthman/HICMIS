@@ -45,6 +45,7 @@ class AuthProvider with ChangeNotifier {
   bool get isHR => _userRole == 'hr';
   bool get isManager => _userRole == 'manager';
   bool get isEmployee => _userRole == 'employee';
+  bool get isAcademicObserver => _userRole == 'academic_observer';
 
   Future<void> _extractUserRoleFromToken() async {
     final token = await ApiManager.getAccessToken();
@@ -61,6 +62,8 @@ class AuthProvider with ChangeNotifier {
                 _userRole = 'manager';
               } else if (roles.contains('hr')) {
                 _userRole = 'hr';
+              } else if (roles.contains('academic_observer')) {
+                _userRole = 'academic_observer';
               } else if (roles.contains('employee')) {
                 _userRole = 'employee';
               }

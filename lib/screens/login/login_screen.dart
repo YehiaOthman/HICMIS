@@ -124,7 +124,7 @@ class LoginScreen extends StatelessWidget {
                             if (success) {
                               Navigator.pushNamedAndRemoveUntil(
                                 context,
-                                '/home',
+                                authProvider.isAcademicObserver ? '/staff-evaluations' : '/home',
                                 (route) => false,
                               );
                             } else if (authProvider.errorMessage != null) {

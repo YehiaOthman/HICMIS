@@ -14,6 +14,7 @@ class AppDrawer extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context);
     final isHR = authProvider.isHR || authProvider.isManager;
     final isManager = authProvider.isManager;
+    final isAcademicObserver = authProvider.isAcademicObserver;
 
     return Drawer(
       backgroundColor: Colors.white,
@@ -66,7 +67,8 @@ class AppDrawer extends StatelessWidget {
                         Navigator.pushReplacementNamed(context, '/profile');
                       },
                     ),
-                    _drawerItem(
+                    if (!isAcademicObserver)
+                      _drawerItem(
                       icon: Icons.calendar_today_outlined,
                       label: "Leaves & Absences",
                       route: '/home',
@@ -111,7 +113,19 @@ class AppDrawer extends StatelessWidget {
                           Navigator.pushReplacementNamed(context, '/daily-attendance');
                         },
                       ),
-                    _drawerItem(
+                    if (isAcademicObserver)
+                      _drawerItem(
+                        icon: Icons.fact_check_outlined,
+                        label: "Staff Evaluations",
+                        route: '/staff-evaluations',
+                        currentRoute: currentRoute,
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(context, '/staff-evaluations');
+                        },
+                      ),
+                    if (!isAcademicObserver)
+                      _drawerItem(
                       icon: Icons.description_outlined,
                       label: "Documents",
                       route: null,

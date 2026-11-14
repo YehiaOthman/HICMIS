@@ -8,6 +8,7 @@ import 'package:backtotrack/screens/profile/profile_screen.dart';
 import 'package:backtotrack/screens/employees/employees_screen.dart';
 import 'package:backtotrack/screens/attendance/attendance_screen.dart';
 import 'package:backtotrack/screens/attendance/daily_attendance_screen.dart';
+import 'package:backtotrack/screens/staff_evaluations/staff_evaluations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
               '/employees': (context) =>   EmployeesScreen(),
               '/attendance': (context) => const AttendanceScreen(),
               '/daily-attendance': (context) => const DailyAttendanceScreen(),
+              '/staff-evaluations': (context) => const StaffEvaluationsScreen(),
             },
         );
       },
