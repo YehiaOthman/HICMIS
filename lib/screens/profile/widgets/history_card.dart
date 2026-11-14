@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HistoryCard extends StatelessWidget {
@@ -19,11 +20,11 @@ class HistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      margin: const EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.all(20.r),
+      margin: EdgeInsets.only(bottom: 20.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(25.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,31 +32,30 @@ class HistoryCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: const Color(0xFF64748B), size: 20),
-              const SizedBox(width: 12),
+              Icon(icon, color: const Color(0xFF64748B), size: 20.r),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.bold)),
-                    Text(subtitle, style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
+                    Text(title, style: GoogleFonts.poppins(fontSize: 15.sp, fontWeight: FontWeight.bold)),
+                    Text(subtitle, style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
                   ],
                 ),
               ),
-              const Icon(Icons.keyboard_arrow_up, color: Color(0xFFCBD5E1)),
+              Icon(Icons.keyboard_arrow_up, color: const Color(0xFFCBD5E1), size: 20.r),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 15),
-            child: Divider(color: Color(0xFFF1F5F9)),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 15.h),
+            child: const Divider(color: Color(0xFFF1F5F9)),
           ),
-          // The inner light grey card
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(15),
+            padding: EdgeInsets.all(15.r),
             decoration: BoxDecoration(
               color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(15.r),
             ),
             child: child,
           ),
@@ -63,4 +63,4 @@ class HistoryCard extends StatelessWidget {
       ),
     );
   }
-}
+}
