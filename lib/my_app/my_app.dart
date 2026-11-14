@@ -5,7 +5,11 @@ import 'package:backtotrack/screens/login/forget_password.dart';
 import 'package:backtotrack/screens/login/login_screen.dart';
 import 'package:backtotrack/screens/login/sign_up.dart';
 import 'package:backtotrack/screens/profile/profile_screen.dart';
+import 'package:backtotrack/screens/employees/employees_screen.dart';
+import 'package:backtotrack/screens/attendance/attendance_screen.dart';
+import 'package:backtotrack/screens/attendance/daily_attendance_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 void main() {
@@ -17,22 +21,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'HICIMS',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00C1A3)),
-        useMaterial3: true,
-      ),
-      initialRoute: '/',
-        routes: {
-          '/': (context) => LoginScreen(),
-          '/signup': (context) => SignUpScreen(),
-          '/forgot': (context) => ForgotPasswordScreen(),
-          '/check-email': (context) =>  CheckEmailScreen(),
-          '/home': (context) =>  HomeScreen(),
-          '/profile': (context) =>  ProfileScreen(),
-        },
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'HICIMS',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00C1A3)),
+            useMaterial3: true,
+          ),
+          initialRoute: '/',
+            routes: {
+              '/': (context) => LoginScreen(),
+              // '/signup': (context) => SignUpScreen(),
+              // '/forgot': (context) => ForgotPasswordScreen(),
+              '/check-email': (context) =>  CheckEmailScreen(),
+              '/home': (context) =>   HomeScreen(),
+              '/profile': (context) =>   ProfileScreen(),
+              '/employees': (context) =>   EmployeesScreen(),
+              '/attendance': (context) => const AttendanceScreen(),
+              '/daily-attendance': (context) => const DailyAttendanceScreen(),
+            },
+        );
+      },
     );
   }
 }
