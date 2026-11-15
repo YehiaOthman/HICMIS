@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -31,7 +32,7 @@ class _CustomPasswordTextFiledState extends State<CustomPasswordTextFiled> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.label.toUpperCase(),
+          context.tr(widget.label.toUpperCase()),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             color: const Color(0xFF94A3B8),
@@ -57,7 +58,7 @@ class _CustomPasswordTextFiledState extends State<CustomPasswordTextFiled> {
               ),
               onPressed: () => setState(() => _isObscured = !_isObscured),
             ),
-            hintText: widget.title,
+            hintText: context.tr(widget.title),
             hintStyle: GoogleFonts.poppins(
               color: Colors.grey.withOpacity(0.5),
               fontSize: 14.sp,

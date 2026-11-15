@@ -1,5 +1,6 @@
 import 'package:backtotrack/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'widgets/custom_text_filed.dart';
 import 'widgets/custom_password_text_filed.dart';
 import 'widgets/auth_header.dart';
 import 'widgets/primary_button.dart';
+import 'package:backtotrack/l10n/language_switch_button.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -22,7 +24,7 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0.5,
         title: Text(
-          'Sign In',
+          context.tr('Sign In'),
           style: GoogleFonts.poppins(
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
@@ -30,6 +32,7 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        actions: const [LanguageSwitchButton()],
       ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
@@ -38,7 +41,7 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 40.h),
-                const AuthHeader(
+                AuthHeader(
                   icon: Icons.person_outline,
                   title: 'Welcome Back',
                   subtitle:
@@ -106,7 +109,7 @@ class LoginScreen extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Please fill all fields',
+                                  context.tr('Please fill all fields'),
                                   style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp),
                                 ),
                                 backgroundColor: const Color(0xFF2353D0),
@@ -131,7 +134,7 @@ class LoginScreen extends StatelessWidget {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    authProvider.errorMessage!,
+                                    context.tr(authProvider.errorMessage!),
                                     style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp),
                                   ),
                                   backgroundColor: const Color(0xFF2353D0),

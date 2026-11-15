@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/custom_text_filed.dart';
@@ -29,7 +30,7 @@ class SignUpScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Create Account',
+          context.tr('Create Account'),
           style: GoogleFonts.poppins(
             fontSize: 18.sp,
             fontWeight: FontWeight.w600,
@@ -159,11 +160,11 @@ class SignUpScreen extends StatelessWidget {
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Text("Already have an account? ",
+                Text(context.tr("Already have an account? "),
                     style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp)),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Text("Sign In",
+                  child: Text(context.tr("Sign In"),
                       style: GoogleFonts.poppins(
                           color: const Color(0xFF2353D0),
                           fontWeight: FontWeight.bold,

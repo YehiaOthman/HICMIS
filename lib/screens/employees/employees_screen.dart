@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -93,8 +94,8 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Employee Registry', style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
-                      Text('Search, view full details and\n onboard personnel.',
+                      Text(context.tr('Employee Registry'), style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
+                      Text(context.tr('Search, view full details and\n onboard personnel.'),
                           style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
                     ],
                   ),
@@ -130,7 +131,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                       onChanged: _onSearchChanged,
                       style: GoogleFonts.poppins(fontSize: 14.sp),
                       decoration: InputDecoration(
-                        hintText: 'Search by name...',
+                        hintText: context.tr('Search by name...'),
                         hintStyle: GoogleFonts.poppins(color: Colors.grey, fontSize: 14.sp),
                         prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20.r),
                         border: InputBorder.none,
@@ -173,7 +174,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('FILTER EMPLOYEES',
+                    Text(context.tr('FILTER EMPLOYEES'),
                         style: GoogleFonts.poppins(fontSize: 11.sp, fontWeight: FontWeight.bold, color: const Color(0xFF94A3B8), letterSpacing: 1.1)),
                     SizedBox(height: 20.h),
                     _buildFilterField('Employee Code', 'e.g. EMP-0042', Icons.badge_outlined),
@@ -190,7 +191,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                           child: OutlinedButton.icon(
                             onPressed: () {},
                             icon: Icon(Icons.refresh, size: 18.r),
-                            label: Text('Clear', style: TextStyle(fontSize: 13.sp)),
+                            label: Text(context.tr('Clear'), style: TextStyle(fontSize: 13.sp)),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: const Color(0xFF00C1A3),
                               side: const BorderSide(color: Color(0xFF00C1A3)),
@@ -204,7 +205,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                           child: ElevatedButton.icon(
                             onPressed: () {},
                             icon: Icon(Icons.filter_alt_outlined, size: 18.r),
-                            label: Text('Apply Filters', style: TextStyle(fontSize: 13.sp)),
+                            label: Text(context.tr('Apply Filters'), style: TextStyle(fontSize: 13.sp)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF2353D0),
                               foregroundColor: Colors.white,
@@ -244,9 +245,9 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      searchQuery.isEmpty
+                      context.tr(searchQuery.isEmpty
                           ? (total != null ? '$total employees found' : 'Loading...')
-                          : '${filteredEmployees.length} employees found',
+                          : context.tr('{0} employees found', [filteredEmployees.length])),
                       style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp),
                     ),
                     SizedBox(height: 15.h),
@@ -271,14 +272,14 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
                             Icon(Icons.people_outline, size: 48.r, color: const Color(0xFFCBD5E1)),
                             SizedBox(height: 10.h),
                             Text(
-                              'No Employees Found',
+                              context.tr('No Employees Found'),
                               style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
                             ),
                             SizedBox(height: 5.h),
                             Text(
-                              searchQuery.isEmpty
-                                  ? 'No employees available.'
-                                  : 'Try adjusting your search or filters.',
+                              context.tr(searchQuery.isEmpty
+                                  ? context.tr('No employees available.')
+                                  : context.tr('Try adjusting your search or filters.')),
                               style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey),
                             ),
                           ],
@@ -343,7 +344,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
 
   // Helper UI methods
   Widget _buildLabel(String text) {
-    return Text(text, style: GoogleFonts.poppins(fontSize: 13.sp, color: const Color(0xFF475569), fontWeight: FontWeight.w500));
+    return Text(context.tr(text), style: GoogleFonts.poppins(fontSize: 13.sp, color: const Color(0xFF475569), fontWeight: FontWeight.w500));
   }
 
   Widget _buildFilterField(String label, String hint, IconData icon) {
@@ -355,7 +356,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
         TextField(
           style: GoogleFonts.poppins(fontSize: 13.sp),
           decoration: InputDecoration(
-            hintText: hint,
+            hintText: context.tr(hint),
             hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey),
             prefixIcon: Icon(icon, size: 18.r, color: const Color(0xFFCBD5E1)),
             filled: true,
@@ -382,7 +383,7 @@ class _EmployeesScreenState extends State<EmployeesScreen> {
           value: 'All Departments',
           isExpanded: true,
           style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
-          items: ['All Departments', 'IT', 'HR'].map((e) => DropdownMenuItem(value: e, child: Text(e, style: GoogleFonts.poppins(fontSize: 13.sp)))).toList(),
+          items: ['All Departments', 'IT', 'HR'].map((e) => DropdownMenuItem(value: e, child: Text(context.tr(e), style: GoogleFonts.poppins(fontSize: 13.sp)))).toList(),
           onChanged: (v) {},
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -31,7 +32,7 @@ class AuthHeader extends StatelessWidget {
         ),
         SizedBox(height: 25.h),
         Text(
-          title,
+          context.tr(title),
           textAlign: TextAlign.center,
           style: GoogleFonts.poppins(
             fontSize: 24.sp,
@@ -41,7 +42,7 @@ class AuthHeader extends StatelessWidget {
         ),
         SizedBox(height: 8.h),
         Text(
-          subtitle,
+          context.tr(subtitle),
           textAlign: TextAlign.center,
           style: GoogleFonts.poppins(
             fontSize: 13.sp,

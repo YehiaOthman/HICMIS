@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -39,7 +40,7 @@ class PrimaryButton extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      text,
+                      context.tr(text),
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: Colors.white,

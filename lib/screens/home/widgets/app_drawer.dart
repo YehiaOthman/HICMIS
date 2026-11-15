@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'package:backtotrack/providers/employee_provider.dart';
 import 'package:backtotrack/providers/attendance_provider.dart';
 import 'package:backtotrack/providers/daily_attendance_provider.dart';
 import 'package:backtotrack/providers/staff_evaluation_provider.dart';
+import 'package:backtotrack/l10n/language_switch_button.dart';
 
 class AppDrawer extends StatelessWidget {
   final String currentRoute;
@@ -24,9 +26,9 @@ class AppDrawer extends StatelessWidget {
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30.r),
-          bottomRight: Radius.circular(30.r),
+        borderRadius: BorderRadiusDirectional.only(
+          topEnd: Radius.circular(30.r),
+          bottomEnd: Radius.circular(30.r),
         ),
       ),
       child: SafeArea(
@@ -48,10 +50,11 @@ class AppDrawer extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('HICMIS', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp)),
-                        Text('HR SYSTEM', style: GoogleFonts.poppins(fontSize: 10.sp, color: Colors.grey, letterSpacing: 1.1)),
+                        Text(context.tr('HR SYSTEM'), style: GoogleFonts.poppins(fontSize: 10.sp, color: Colors.grey, letterSpacing: 1.1)),
                       ],
                     ),
                   ),
+                  const LanguageSwitchButton(),
                 ],
               ),
             ),
@@ -180,7 +183,7 @@ class AppDrawer extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
           leading: Icon(icon, color: isActive ? const Color(0xFF2353D0) : Colors.grey, size: 22.r),
           title: Text(
-            label,
+            context.tr(label),
             style: GoogleFonts.poppins(
               fontSize: 14.sp,
               color: isActive ? const Color(0xFF2353D0) : const Color(0xFF475569),
@@ -198,18 +201,18 @@ class AppDrawer extends StatelessWidget {
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
         title: Text(
-          'Logout',
+          context.tr('Logout'),
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp),
         ),
         content: Text(
-          'Are you sure you want to logout?',
+          context.tr('Are you sure you want to logout?'),
           style: GoogleFonts.poppins(fontSize: 14.sp),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'Cancel',
+              context.tr('Cancel'),
               style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp),
             ),
           ),
@@ -231,7 +234,7 @@ class AppDrawer extends StatelessWidget {
               navigator.pushNamedAndRemoveUntil('/', (route) => false);
             },
             child: Text(
-              'Logout',
+              context.tr('Logout'),
               style: GoogleFonts.poppins(color: const Color(0xFF2353D0), fontWeight: FontWeight.bold, fontSize: 14.sp),
             ),
           ),

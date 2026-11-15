@@ -1,6 +1,7 @@
 
 import 'package:backtotrack/screens/login/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,7 +20,7 @@ class CheckEmailScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Check Your Email', style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black)),
+        title: Text(context.tr('Check Your Email'), style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black)),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 25.w),
@@ -49,7 +50,7 @@ class CheckEmailScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30.h),
-            Text('Link Sent!', style: GoogleFonts.poppins(fontSize: 24.sp, fontWeight: FontWeight.bold)),
+            Text(context.tr('Link Sent!'), style: GoogleFonts.poppins(fontSize: 24.sp, fontWeight: FontWeight.bold)),
             SizedBox(height: 10.h),
             Text(
               'A password reset link has been sent to your email address. Please check your inbox and follow the instructions.',
@@ -72,14 +73,14 @@ class CheckEmailScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('SENT TO', style: GoogleFonts.poppins(fontSize: 10.sp, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2)),
+                        Text(context.tr('SENT TO'), style: GoogleFonts.poppins(fontSize: 10.sp, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2)),
                         Text(
-                          email,
+                          context.tr(email),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600, color: const Color(0xFF1E293B)),
                         ),
-                        Text('Link expires in 30 minutes', style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey)),
+                        Text(context.tr('Link expires in 30 minutes'), style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey)),
                       ],
                     ),
                   ),
@@ -94,7 +95,7 @@ class CheckEmailScreen extends StatelessWidget {
             SizedBox(height: 25.h),
             TextButton(
               onPressed: () {},
-              child: Text('Resend Email', style: GoogleFonts.poppins(color: const Color(0xFF2353D0), fontWeight: FontWeight.bold, fontSize: 14.sp)),
+              child: Text(context.tr('Resend Email'), style: GoogleFonts.poppins(color: const Color(0xFF2353D0), fontWeight: FontWeight.bold, fontSize: 14.sp)),
             ),
             SizedBox(height: 30.h),
           ],

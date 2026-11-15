@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -85,7 +86,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
     if (_reasonController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please enter a reason for your leave request.', style: GoogleFonts.poppins(fontSize: 14.sp)),
+          content: Text(context.tr('Please enter a reason for your leave request.'), style: GoogleFonts.poppins(fontSize: 14.sp)),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -108,7 +109,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
       if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result['message'] ?? 'Leave request saved as draft', style: GoogleFonts.poppins(fontSize: 14.sp)),
+            content: Text(context.tr(result['message'] ?? context.tr('Leave request saved as draft')), style: GoogleFonts.poppins(fontSize: 14.sp)),
             backgroundColor: const Color(0xFF22C55E),
           ),
         );
@@ -116,7 +117,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result['message'] ?? 'Failed to submit leave request.', style: GoogleFonts.poppins(fontSize: 14.sp)),
+            content: Text(context.tr(result['message'] ?? context.tr('Failed to submit leave request.')), style: GoogleFonts.poppins(fontSize: 14.sp)),
             backgroundColor: Colors.redAccent,
           ),
         );
@@ -144,7 +145,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'New Leave Request',
+                    context.tr('New Leave Request'),
                     style: GoogleFonts.poppins(
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
@@ -251,7 +252,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
 
   Widget _buildLabel(String text) {
     return Text(
-      text,
+      context.tr(text),
       style: GoogleFonts.poppins(
         fontSize: 11.sp,
         fontWeight: FontWeight.bold,
@@ -276,7 +277,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(child: Text(value, style: GoogleFonts.poppins(fontSize: 12.sp, color: const Color(0xFF1E293B)))),
+              Flexible(child: Text(context.tr(value), style: GoogleFonts.poppins(fontSize: 12.sp, color: const Color(0xFF1E293B)))),
               Icon(Icons.calendar_today_outlined, size: 16.r, color: const Color(0xFF94A3B8)),
             ],
           ),
@@ -292,7 +293,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
       runSpacing: 4.h,
       children: [
         Text(
-          'Requested Duration: ',
+          context.tr('Requested Duration: '),
           style: GoogleFonts.poppins(fontSize: 13.sp, color: const Color(0xFF64748B)),
         ),
         Container(
@@ -302,7 +303,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Text(
-            '$_durationDays ${_durationDays == 1 ? "day" : "days"}',
+            context.tr(_durationDays == 1 ? '{0} day' : '{0} days', [_durationDays]),
             style: GoogleFonts.poppins(
               fontSize: 12.sp,
               color: const Color(0xFF2353D0),
@@ -328,7 +329,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
           style: GoogleFonts.poppins(color: Colors.black, fontSize: 13.sp),
           isExpanded: true,
           items: _absenceTypes
-              .map((String v) => DropdownMenuItem(value: v, child: Text(v, style: GoogleFonts.poppins(fontSize: 13.sp))))
+              .map((String v) => DropdownMenuItem(value: v, child: Text(context.tr(v), style: GoogleFonts.poppins(fontSize: 13.sp))))
               .toList(),
           onChanged: (val) {
             if (val != null) {
@@ -346,7 +347,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
       maxLines: 3,
       style: GoogleFonts.poppins(fontSize: 13.sp),
       decoration: InputDecoration(
-        hintText: hint,
+        hintText: context.tr(hint),
         hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: const Color(0xFF94A3B8)),
         filled: true,
         fillColor: Colors.white,
@@ -377,11 +378,11 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
           Icon(Icons.cloud_upload_outlined, size: 30.r, color: const Color(0xFFCBD5E1)),
           SizedBox(height: 6.h),
           Text(
-            'DRAG & DROP OR CLICK TO UPLOAD',
+            context.tr('DRAG & DROP OR CLICK TO UPLOAD'),
             style: GoogleFonts.poppins(fontSize: 10.sp, fontWeight: FontWeight.bold, color: const Color(0xFF94A3B8)),
           ),
           Text(
-            'SUPPORTING DOCUMENTS (PDF, JPG, PNG)',
+            context.tr('SUPPORTING DOCUMENTS (PDF, JPG, PNG)'),
             style: GoogleFonts.poppins(fontSize: 9.sp, color: const Color(0xFFCBD5E1)),
           ),
         ],
@@ -410,7 +411,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
         ),
         child: Center(
           child: Text(
-            label,
+            context.tr(label),
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontSize: 13.sp,

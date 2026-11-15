@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:backtotrack/data/models/absence_request.dart';
@@ -86,9 +87,11 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
   String _formatDateTime(String? value) {
     final dt = DateTime.tryParse(value ?? '')?.toLocal();
     if (dt == null) return '';
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = context.isArabic
+        ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+        : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     final hour = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
-    final period = dt.hour < 12 ? 'AM' : 'PM';
+    final period = dt.hour < 12 ? context.tr('AM') : context.tr('PM');
     return '${months[dt.month - 1]} ${dt.day}, ${dt.year}, '
         '${hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')} $period';
   }
@@ -144,10 +147,10 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_formatAbsenceType(widget.type), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 15.sp)),
+                      Text(context.tr(_formatAbsenceType(widget.type)), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 15.sp)),
                       if (widget.employeeName != null && widget.employeeName!.isNotEmpty)
-                        Text(widget.employeeName!, style: GoogleFonts.poppins(fontSize: 12.sp, color: const Color(0xFF2353D0), fontWeight: FontWeight.w600)),
-                      Text(widget.dateRange, style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey)),
+                        Text(context.tr(widget.employeeName!), style: GoogleFonts.poppins(fontSize: 12.sp, color: const Color(0xFF2353D0), fontWeight: FontWeight.w600)),
+                      Text(context.tr(widget.dateRange), style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey)),
                     ],
                   ),
                 ),
@@ -160,7 +163,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     border: Border.all(color: widget.statusColor.withOpacity(0.2)),
                   ),
                   child: Text(
-                    widget.status.replaceAll('_', ' ').toUpperCase(),
+                    context.tr(widget.status.replaceAll('_', ' ').toUpperCase()),
                     style: GoogleFonts.poppins(fontSize: 10.sp, fontWeight: FontWeight.bold, color: widget.statusColor),
                   ),
                 ),
@@ -169,7 +172,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                   IconButton(
                     onPressed: _isSubmitting ? null : widget.onDelete,
                     icon: Icon(Icons.delete_outline, color: const Color(0xFFEF4444), size: 20.r),
-                    tooltip: 'Delete Request',
+                    tooltip: context.tr('Delete Request'),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
@@ -186,9 +189,9 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
-                widget.breakFromDate != null
-                    ? 'Early return on: ${widget.breakFromDate}'
-                    : 'Reason: ${widget.reason}',
+                context.tr(widget.breakFromDate != null
+                    ? context.tr('Early return on: {0}', [widget.breakFromDate])
+                    : context.tr('Reason: {0}', [widget.reason])),
                 style: GoogleFonts.poppins(fontSize: 12.sp, color: const Color(0xFF475569)),
               ),
             ),
@@ -208,7 +211,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                                 child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                               )
                             : Icon(Icons.send_outlined, size: 16.r),
-                        label: Text('Submit', style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600)),
+                        label: Text(context.tr('Submit'), style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2353D0),
                           foregroundColor: Colors.white,
@@ -219,7 +222,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     : ElevatedButton.icon(
                         onPressed: widget.onEarlyReturn,
                         icon: Icon(Icons.directions_walk, size: 16.r),
-                        label: Text('Request Early Return', style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600)),
+                        label: Text(context.tr('Request Early Return'), style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF59E0B),
                           foregroundColor: Colors.white,
@@ -239,7 +242,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     OutlinedButton.icon(
                       onPressed: widget.onReject,
                       icon: Icon(Icons.close, size: 16.r),
-                      label: Text('Reject', style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600)),
+                      label: Text(context.tr('Reject'), style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600)),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFFEF4444),
                         side: const BorderSide(color: Color(0xFFEF4444)),
@@ -252,7 +255,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     ElevatedButton.icon(
                       onPressed: widget.onApprove,
                       icon: Icon(Icons.check, size: 16.r),
-                      label: Text('Approve', style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600)),
+                      label: Text(context.tr('Approve'), style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF22C55E),
                         foregroundColor: Colors.white,
@@ -276,7 +279,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                       color: const Color(0xFF2353D0)
                   ),
                   Text(
-                    _isExpanded ? ' Hide details' : ' View details',
+                    context.tr(_isExpanded ? context.tr(' Hide details') : context.tr(' View details')),
                     style: GoogleFonts.poppins(
                       fontSize: 12.sp,
                       color: const Color(0xFF2353D0),
@@ -301,7 +304,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                   SizedBox(width: 5.w),
                   Expanded(
                     child: Text(
-                      'Files are securely stored.',
+                      context.tr('Files are securely stored.'),
                       style: GoogleFonts.poppins(fontSize: 12.sp, color: const Color(0xFF475569)),
                     ),
                   ),
@@ -314,7 +317,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
               SizedBox(height: 12.h),
               if (widget.approvalSteps.isEmpty)
                 Text(
-                  status == 'draft' ? 'Not submitted yet.' : 'No approval steps yet.',
+                  context.tr(status == 'draft' ? context.tr('Not submitted yet.') : context.tr('No approval steps yet.')),
                   style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey),
                 )
               else
@@ -375,21 +378,21 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
                     border: Border.all(color: color.withOpacity(0.2)),
                   ),
                   child: Text(
-                    (step.status ?? 'PENDING').toUpperCase(),
+                    context.tr((step.status ?? 'PENDING').toUpperCase()),
                     style: GoogleFonts.poppins(fontSize: 9.sp, fontWeight: FontWeight.bold, color: color),
                   ),
                 ),
                 if (decidedAt.isNotEmpty) ...[
                   SizedBox(height: 4.h),
                   Text(
-                    decidedAt,
+                    context.tr(decidedAt),
                     style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey),
                   ),
                 ],
                 if (step.comment != null && step.comment!.isNotEmpty) ...[
                   SizedBox(height: 4.h),
                   Text(
-                    step.comment!,
+                    context.tr(step.comment!),
                     style: GoogleFonts.poppins(fontSize: 11.sp, color: const Color(0xFF475569)),
                   ),
                 ],
@@ -403,7 +406,7 @@ class _LeaveRequestCardState extends State<LeaveRequestCard> {
 
   Widget _buildSectionTitle(String title) {
     return Text(
-      title,
+      context.tr(title),
       style: GoogleFonts.poppins(
         fontSize: 10.sp,
         fontWeight: FontWeight.bold,

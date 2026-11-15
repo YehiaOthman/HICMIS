@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -76,7 +77,7 @@ class _EarlyReturnDialogState extends State<EarlyReturnDialog> {
 
     messenger.showSnackBar(
       SnackBar(
-        content: Text(result['message'] ?? '', style: GoogleFonts.poppins(fontSize: 14.sp)),
+        content: Text(context.tr(result['message'] ?? ''), style: GoogleFonts.poppins(fontSize: 14.sp)),
         backgroundColor: result['success'] ? const Color(0xFF22C55E) : Colors.redAccent,
       ),
     );
@@ -102,7 +103,7 @@ class _EarlyReturnDialogState extends State<EarlyReturnDialog> {
               children: [
                 Expanded(
                   child: Text(
-                    'Early Return Request',
+                    context.tr('Early Return Request'),
                     style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -116,19 +117,19 @@ class _EarlyReturnDialogState extends State<EarlyReturnDialog> {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Select the date you intend to return to work. This date must be after the start date of your leave and on or before its end date.',
+              context.tr('Select the date you intend to return to work. This date must be after the start date of your leave and on or before its end date.'),
               style: labelStyle,
             ),
             SizedBox(height: 12.h),
-            Text('Absence Type: ${_formatType(widget.request.absenceType)}', style: labelStyle),
+            Text(context.tr('Absence Type: {0}', [_formatType(widget.request.absenceType)]), style: labelStyle),
             SizedBox(height: 6.h),
             Text(
-              'Start Date - End Date: ${widget.request.startDate} - ${widget.request.endDate}',
+              context.tr('Start Date - End Date: {0} - {1}', [widget.request.startDate, widget.request.endDate]),
               style: labelStyle,
             ),
             SizedBox(height: 16.h),
             Text(
-              'RETURN DATE',
+              context.tr('RETURN DATE'),
               style: GoogleFonts.poppins(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.bold,
@@ -150,7 +151,7 @@ class _EarlyReturnDialogState extends State<EarlyReturnDialog> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(_formatDate(_returnDate), style: GoogleFonts.poppins(fontSize: 14.sp)),
+                      child: Text(context.tr(_formatDate(_returnDate)), style: GoogleFonts.poppins(fontSize: 14.sp)),
                     ),
                     Icon(Icons.calendar_today_outlined, size: 18.r, color: const Color(0xFF2353D0)),
                   ],
@@ -163,7 +164,7 @@ class _EarlyReturnDialogState extends State<EarlyReturnDialog> {
               children: [
                 TextButton(
                   onPressed: _isSubmitting ? null : () => Navigator.pop(context),
-                  child: Text('Cancel', style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp)),
+                  child: Text(context.tr('Cancel'), style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp)),
                 ),
                 SizedBox(width: 8.w),
                 ElevatedButton(
@@ -179,7 +180,7 @@ class _EarlyReturnDialogState extends State<EarlyReturnDialog> {
                           height: 18.r,
                           child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : Text('Confirm', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                      : Text(context.tr('Confirm'), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14.sp)),
                 ),
               ],
             ),

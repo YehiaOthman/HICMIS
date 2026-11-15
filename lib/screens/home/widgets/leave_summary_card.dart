@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -36,7 +37,7 @@ class LeaveSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title.toUpperCase(),
+            context.tr(title.toUpperCase()),
             style: GoogleFonts.poppins(
               fontSize: 10.sp,
               fontWeight: FontWeight.bold,
@@ -45,7 +46,7 @@ class LeaveSummaryCard extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            value,
+            context.tr(value),
             style: GoogleFonts.poppins(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,

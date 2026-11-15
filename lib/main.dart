@@ -4,13 +4,19 @@ import 'package:backtotrack/providers/employee_provider.dart';
 import 'package:backtotrack/providers/attendance_provider.dart';
 import 'package:backtotrack/providers/daily_attendance_provider.dart';
 import 'package:backtotrack/providers/staff_evaluation_provider.dart';
+import 'package:backtotrack/providers/locale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final localeProvider = LocaleProvider();
+  await localeProvider.load();
+
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(value: localeProvider),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => EmployeeProvider()),
         ChangeNotifierProvider(create: (_) => AttendanceProvider()),

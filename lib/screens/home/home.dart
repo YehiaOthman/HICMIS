@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
         title: Text(
-          approve ? 'Approve Leave Request' : 'Reject Leave Request',
+          context.tr(approve ? context.tr('Approve Leave Request') : context.tr('Reject Leave Request')),
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp),
         ),
         content: TextField(
@@ -51,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
           maxLines: 3,
           style: GoogleFonts.poppins(fontSize: 14.sp),
           decoration: InputDecoration(
-            hintText: 'Comment (optional)',
+            hintText: context.tr('Comment (optional)'),
             hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
           ),
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Cancel', style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp)),
+            child: Text(context.tr('Cancel'), style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -70,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   .decideAbsenceRequest(id, approve: approve, comment: comment);
               messenger.showSnackBar(
                 SnackBar(
-                  content: Text(res['message'] ?? '', style: GoogleFonts.poppins(fontSize: 14.sp)),
+                  content: Text(context.tr(res['message'] ?? ''), style: GoogleFonts.poppins(fontSize: 14.sp)),
                   backgroundColor: res['success'] ? const Color(0xFF22C55E) : Colors.redAccent,
                 ),
               );
@@ -80,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
             ),
-            child: Text(approve ? 'Approve' : 'Reject', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+            child: Text(context.tr(approve ? context.tr('Approve') : context.tr('Reject')), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14.sp)),
           ),
         ],
       ),
@@ -92,12 +93,12 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
-        title: Text('Delete Leave Request', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp)),
-        content: Text('Are you sure you want to delete this leave request?', style: GoogleFonts.poppins(fontSize: 14.sp)),
+        title: Text(context.tr('Delete Leave Request'), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp)),
+        content: Text(context.tr('Are you sure you want to delete this leave request?'), style: GoogleFonts.poppins(fontSize: 14.sp)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Cancel', style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp)),
+            child: Text(context.tr('Cancel'), style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -107,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(res['message'] ?? 'Deleted', style: GoogleFonts.poppins(fontSize: 14.sp)),
+                    content: Text(context.tr(res['message'] ?? context.tr('Deleted')), style: GoogleFonts.poppins(fontSize: 14.sp)),
                     backgroundColor: res['success'] ? const Color(0xFF22C55E) : Colors.redAccent,
                   ),
                 );
@@ -118,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
             ),
-            child: Text('Delete', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+            child: Text(context.tr('Delete'), style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14.sp)),
           ),
         ],
       ),
@@ -130,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final res = await Provider.of<EmployeeProvider>(context, listen: false).submitAbsenceRequest(id);
     messenger.showSnackBar(
       SnackBar(
-        content: Text(res['message'] ?? '', style: GoogleFonts.poppins(fontSize: 14.sp)),
+        content: Text(context.tr(res['message'] ?? ''), style: GoogleFonts.poppins(fontSize: 14.sp)),
         backgroundColor: res['success'] ? const Color(0xFF22C55E) : Colors.redAccent,
       ),
     );
@@ -233,8 +234,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Leaves & Absences', style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
-                            Text('Track entitlements and requests.', style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
+                            Text(context.tr('Leaves & Absences'), style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
+                            Text(context.tr('Track entitlements and requests.'), style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
                           ],
                         ),
                       ),
@@ -247,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           },
                           icon: Icon(Icons.add, size: 18.r),
-                          label: Text('Request', style: TextStyle(fontSize: 13.sp)),
+                          label: Text(context.tr('Request'), style: TextStyle(fontSize: 13.sp)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2353D0),
                             foregroundColor: Colors.white,
@@ -277,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 child: Text(
-                                  'My Requests',
+                                  context.tr('My Requests'),
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
                                     fontSize: 13.sp,
@@ -298,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 child: Text(
-                                  'Pending Requests',
+                                  context.tr('Pending Requests'),
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
                                     fontSize: 13.sp,
@@ -319,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${(isHR && _selectedTabIndex == 1 ? pendingRequests : requests).length} requests found',
+                        context.tr('{0} requests found', [(isHR && _selectedTabIndex == 1 ? pendingRequests : requests).length]),
                         style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp),
                       ),
                     ],
@@ -349,14 +350,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           Icon(Icons.inbox_outlined, size: 48.r, color: const Color(0xFFCBD5E1)),
                           SizedBox(height: 10.h),
                           Text(
-                            isHR && _selectedTabIndex == 1 ? 'No Pending Requests' : 'No Leave Requests Yet',
+                            context.tr(isHR && _selectedTabIndex == 1 ? context.tr('No Pending Requests') : context.tr('No Leave Requests Yet')),
                             style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
                           ),
                           SizedBox(height: 5.h),
                           Text(
-                            isHR && _selectedTabIndex == 1 
-                              ? 'There are no pending requests to review.' 
-                              : 'Click "Request" to submit a new leave application.',
+                            context.tr(isHR && _selectedTabIndex == 1 
+                              ? context.tr('There are no pending requests to review.') 
+                              : context.tr('Click "Request" to submit a new leave application.')),
                             style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey),
                             textAlign: TextAlign.center,
                           ),

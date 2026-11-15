@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -105,8 +106,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Attendance', style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
-                  Text('Employees attendance records for the selected date.',
+                  Text(context.tr('Attendance'), style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
+                  Text(context.tr('Employees attendance records for the selected date.'),
                       style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
 
                   SizedBox(height: 25.h),
@@ -125,7 +126,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             onChanged: _onSearchChanged,
                             style: GoogleFonts.poppins(fontSize: 14.sp),
                             decoration: InputDecoration(
-                              hintText: 'Search by name or code...',
+                              hintText: context.tr('Search by name or code...'),
                               hintStyle: GoogleFonts.poppins(color: Colors.grey, fontSize: 14.sp),
                               prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20.r),
                               border: InputBorder.none,
@@ -149,7 +150,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               Icon(Icons.calendar_today_outlined, color: Colors.white, size: 18.r),
                               SizedBox(width: 6.w),
                               Text(
-                                _formatDisplayDate(provider.selectedDate),
+                                context.tr(_formatDisplayDate(provider.selectedDate)),
                                 style: GoogleFonts.poppins(color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.w500),
                               ),
                             ],
@@ -162,7 +163,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   SizedBox(height: 25.h),
 
                   Text(
-                    total != null ? '$total records found' : (isLoading ? 'Loading...' : ''),
+                    context.tr(total != null ? context.tr('{0} records found', [total]) : (isLoading ? 'Loading...' : '')),
                     style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp),
                   ),
                   SizedBox(height: 15.h),
@@ -187,15 +188,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           Icon(Icons.access_time, size: 48.r, color: const Color(0xFFCBD5E1)),
                           SizedBox(height: 10.h),
                           Text(
-                            'No Attendance Records',
+                            context.tr('No Attendance Records'),
                             style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.bold, color: const Color(0xFF475569)),
                           ),
                           SizedBox(height: 5.h),
                           Text(
-                            provider.error ??
+                            context.tr(provider.error ??
                                 (_searchController.text.isEmpty
                                     ? 'No records for this date.'
-                                    : 'Try adjusting your search.'),
+                                    : 'Try adjusting your search.')),
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey),
                           ),
@@ -243,14 +244,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 radius: 20.r,
                 backgroundColor: _getAvatarColor(name),
                 child: Text(
-                  name.isNotEmpty ? name[0].toUpperCase() : '?',
+                  context.tr(name.isNotEmpty ? name[0].toUpperCase() : '?'),
                   style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16.sp),
                 ),
               ),
               SizedBox(width: 12.w),
               Expanded(
                 child: Text(
-                  name,
+                  context.tr(name),
                   style: GoogleFonts.poppins(fontSize: 15.sp, fontWeight: FontWeight.w600, color: const Color(0xFF1E293B)),
                 ),
               ),
@@ -262,7 +263,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Text(
-                    'Manual',
+                    context.tr('Manual'),
                     style: GoogleFonts.poppins(fontSize: 10.sp, fontWeight: FontWeight.w600, color: const Color(0xFFF59E0B)),
                   ),
                 ),
@@ -279,7 +280,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           if (record.notes != null && record.notes!.isNotEmpty) ...[
             SizedBox(height: 12.h),
             Text(
-              record.notes!,
+              context.tr(record.notes!),
               style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey[600]),
             ),
           ],
@@ -292,9 +293,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.poppins(fontSize: 11.sp, color: const Color(0xFF94A3B8))),
+        Text(context.tr(label), style: GoogleFonts.poppins(fontSize: 11.sp, color: const Color(0xFF94A3B8))),
         SizedBox(height: 2.h),
-        Text(value, style: GoogleFonts.poppins(fontSize: 13.sp, fontWeight: FontWeight.w600, color: const Color(0xFF475569))),
+        Text(context.tr(value), style: GoogleFonts.poppins(fontSize: 13.sp, fontWeight: FontWeight.w600, color: const Color(0xFF475569))),
       ],
     );
   }

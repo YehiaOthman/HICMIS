@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -96,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     SizedBox(height: 12.h),
                     Text(
-                      employeeProvider.errorMessage!,
+                      context.tr(employeeProvider.errorMessage!),
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         fontSize: 14.sp,
@@ -107,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ElevatedButton.icon(
                       onPressed: () => employeeProvider.fetchEmployeeProfile(),
                       icon: Icon(Icons.refresh, size: 18.r),
-                      label: Text('Retry', style: TextStyle(fontSize: 14.sp)),
+                      label: Text(context.tr('Retry'), style: TextStyle(fontSize: 14.sp)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2353D0),
                         foregroundColor: Colors.white,
@@ -158,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     runSpacing: 4.h,
                                     children: [
                                       Text(
-                                        data?.name ?? 'Employee',
+                                        context.tr(data?.name ?? context.tr('Employee')),
                                         style: GoogleFonts.poppins(
                                           fontSize: 18.sp,
                                           fontWeight: FontWeight.bold,
@@ -177,9 +178,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   SizedBox(height: 4.h),
                                   Text(
-                                    authProvider.username != null
+                                    context.tr(authProvider.username != null
                                         ? '${authProvider.username}@xtra.com'
-                                        : 'employee@xtra.com',
+                                        : 'employee@xtra.com'),
                                     style: GoogleFonts.poppins(
                                       fontSize: 13.sp,
                                       color: const Color(0xFF64748B),
@@ -209,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'PERSONAL INFORMATION',
+                                context.tr('PERSONAL INFORMATION'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.bold,
@@ -331,7 +332,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             subtitle:
                                 'Manage degrees, institutions, and years of study.',
                             child: Text(
-                              'No education history records found.',
+                              context.tr('No education history records found.'),
                               style: GoogleFonts.poppins(
                                 fontSize: 13.sp,
                                 color: const Color(0xFF64748B),
@@ -357,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   if (edu.institution != null &&
                                       edu.institution!.isNotEmpty)
                                     Text(
-                                      edu.institution!,
+                                      context.tr(edu.institution!),
                                       style: GoogleFonts.poppins(
                                         fontSize: 12.sp,
                                         color: const Color(0xFF64748B),
@@ -365,8 +366,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                   SizedBox(height: 6.h),
                                   Text(
-                                    '${edu.startDate ?? ''} ${(edu.endDate != null && edu.endDate!.isNotEmpty) ? '- ${edu.endDate}' : ''}'
-                                        .trim(),
+                                    context.tr('${edu.startDate ?? ''} ${(edu.endDate != null && edu.endDate!.isNotEmpty) ? '- ${edu.endDate}' : ''}'
+                                        .trim()),
                                     style: GoogleFonts.poppins(
                                       fontSize: 11.sp,
                                       color: const Color(0xFF94A3B8),
@@ -384,7 +385,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             subtitle:
                                 'Manage positions, departments, and tenure dates.',
                             child: Text(
-                              'No position history records found.',
+                              context.tr('No position history records found.'),
                               style: GoogleFonts.poppins(
                                 fontSize: 13.sp,
                                 color: const Color(0xFF64748B),
@@ -401,7 +402,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    pos.title ?? 'Position',
+                                    context.tr(pos.title ?? context.tr('Position')),
                                     style: GoogleFonts.poppins(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.bold,
@@ -410,7 +411,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   if (pos.departmentName != null &&
                                       pos.departmentName!.isNotEmpty)
                                     Text(
-                                      pos.departmentName!,
+                                      context.tr(pos.departmentName!),
                                       style: GoogleFonts.poppins(
                                         fontSize: 12.sp,
                                         color: const Color(0xFF64748B),
@@ -450,7 +451,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Padding(
         padding: EdgeInsets.all(2.r),
         child: Text(
-          text,
+          context.tr(text),
           style: GoogleFonts.poppins(
             color: color,
             fontSize: 10.sp,

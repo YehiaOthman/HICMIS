@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -45,7 +46,7 @@ class EmployeeCard extends StatelessWidget {
             radius: 25.r,
             backgroundColor: avatarColor,
             child: Text(
-              _getInitials(name),
+              context.tr(_getInitials(name)),
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14.sp),
             ),
           ),
@@ -59,7 +60,7 @@ class EmployeeCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        name,
+                        context.tr(name),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
@@ -85,11 +86,11 @@ class EmployeeCard extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 4.h),
-                _buildSmallInfo(Icons.badge_outlined, 'Code: $code'),
+                _buildSmallInfo(Icons.badge_outlined, context.tr('Code: {0}', [code])),
                 SizedBox(height: 4.h),
                 _buildSmallInfo(Icons.business_outlined, department),
                 SizedBox(height: 4.h),
-                _buildSmallInfo(null, 'Hired: $hireDate'),
+                _buildSmallInfo(null, context.tr('Hired: {0}', [hireDate])),
               ],
             ),
           ),

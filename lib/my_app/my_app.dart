@@ -9,7 +9,10 @@ import 'package:backtotrack/screens/employees/employees_screen.dart';
 import 'package:backtotrack/screens/attendance/attendance_screen.dart';
 import 'package:backtotrack/screens/attendance/daily_attendance_screen.dart';
 import 'package:backtotrack/screens/staff_evaluations/staff_evaluations_screen.dart';
+import 'package:backtotrack/providers/locale_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
@@ -30,6 +33,13 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'HICIMS',
           debugShowCheckedModeBanner: false,
+          locale: context.watch<LocaleProvider>().locale,
+          supportedLocales: const [Locale('en'), Locale('ar')],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00C1A3)),
             useMaterial3: true,

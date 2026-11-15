@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -38,8 +39,8 @@ class HistoryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: GoogleFonts.poppins(fontSize: 15.sp, fontWeight: FontWeight.bold)),
-                    Text(subtitle, style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
+                    Text(context.tr(title), style: GoogleFonts.poppins(fontSize: 15.sp, fontWeight: FontWeight.bold)),
+                    Text(context.tr(subtitle), style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey)),
                   ],
                 ),
               ),

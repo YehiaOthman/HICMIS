@@ -1,5 +1,6 @@
 import 'package:backtotrack/data/api_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'widgets/custom_text_filed.dart';
@@ -22,7 +23,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text('Forgot Password', style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black)),
+        title: Text(context.tr('Forgot Password'), style: GoogleFonts.poppins(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black)),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 25.w),
@@ -60,7 +61,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Please Enter Your Email',
+                              context.tr('Please Enter Your Email'),
                               style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp),
                             ),
                             backgroundColor: const Color(0xFF2353D0),
@@ -76,7 +77,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(result['message'] ?? 'Error occurred', style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp)),
+                              content: Text(context.tr(result['message'] ?? context.tr('Error occurred')), style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp)),
                               backgroundColor: const Color(0xFF2353D0),
                             ),
                           );
@@ -92,10 +93,10 @@ class ForgotPasswordScreen extends StatelessWidget {
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Text("Remembered your password? ", style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp)),
+                Text(context.tr("Remembered your password? "), style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13.sp)),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Text("Back to Sign In", style: GoogleFonts.poppins(color: const Color(0xFF2353D0), fontWeight: FontWeight.bold, fontSize: 13.sp)),
+                  child: Text(context.tr("Back to Sign In"), style: GoogleFonts.poppins(color: const Color(0xFF2353D0), fontWeight: FontWeight.bold, fontSize: 13.sp)),
                 ),
               ],
             ),

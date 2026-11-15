@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,7 +27,7 @@ class CustomTextFiled extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label.toUpperCase(),
+          context.tr(label.toUpperCase()),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             color: const Color(0xFF94A3B8),
@@ -47,7 +48,7 @@ class CustomTextFiled extends StatelessWidget {
             suffixIcon: isPassword
                 ? Icon(Icons.visibility_outlined, color: Colors.grey.withOpacity(0.5), size: 20.r)
                 : null,
-            hintText: title,
+            hintText: context.tr(title),
             hintStyle: GoogleFonts.poppins(
               color: Colors.grey.withOpacity(0.5),
               fontWeight: FontWeight.w400,

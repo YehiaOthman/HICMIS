@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -67,9 +68,9 @@ class _StaffEvaluationsScreenState extends State<StaffEvaluationsScreen> with Si
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Staff Evaluations', style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
+                Text(context.tr('Staff Evaluations'), style: GoogleFonts.poppins(fontSize: 22.sp, fontWeight: FontWeight.bold)),
                 Text(
-                  'Administrative, academic, student-activity and quality evaluation forms.',
+                  context.tr('Administrative, academic, student-activity and quality evaluation forms.'),
                   style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey),
                 ),
               ],
@@ -167,8 +168,8 @@ class _EvaluationsListState extends State<_EvaluationsList> with AutomaticKeepAl
                     _dropdown<String?>(
                       value: provider.filterForm,
                       items: [
-                        _menuItem<String?>(null, 'All forms'),
-                        ...StaffEvaluationProvider.allForms.map((f) => _menuItem<String?>(f, StaffEvaluationProvider.formLabel(f))),
+                        _menuItem<String?>(null, context.tr('All forms')),
+                        ...StaffEvaluationProvider.allForms.map((f) => _menuItem<String?>(f, context.tr(StaffEvaluationProvider.formLabel(f)))),
                       ],
                       onChanged: provider.setFilterForm,
                     ),
@@ -219,7 +220,7 @@ class _EvaluationsListState extends State<_EvaluationsList> with AutomaticKeepAl
                     padding: EdgeInsets.symmetric(vertical: 25.h),
                     child: Center(
                       child: Text(
-                        provider.error ?? 'No evaluations found.',
+                        context.tr(provider.error ?? context.tr('No evaluations found.')),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey),
                       ),
@@ -258,7 +259,7 @@ class _EvaluationsListState extends State<_EvaluationsList> with AutomaticKeepAl
               children: [
                 Expanded(
                   child: Text(
-                    e.employeeName ?? 'Unknown',
+                    context.tr(e.employeeName ?? context.tr('Unknown')),
                     style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600, color: _textDark),
                   ),
                 ),
@@ -269,7 +270,7 @@ class _EvaluationsListState extends State<_EvaluationsList> with AutomaticKeepAl
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Text(
-                    StaffEvaluationProvider.formLabel(e.form),
+                    context.tr(StaffEvaluationProvider.formLabel(e.form)),
                     style: GoogleFonts.poppins(fontSize: 10.sp, fontWeight: FontWeight.w600, color: _primary),
                   ),
                 ),
@@ -277,7 +278,7 @@ class _EvaluationsListState extends State<_EvaluationsList> with AutomaticKeepAl
             ),
             if (extra != null) ...[
               SizedBox(height: 4.h),
-              Text(extra, style: GoogleFonts.poppins(fontSize: 11.sp, color: _textMuted)),
+              Text(context.tr(extra), style: GoogleFonts.poppins(fontSize: 11.sp, color: _textMuted)),
             ],
             SizedBox(height: 12.h),
             Row(
@@ -301,9 +302,9 @@ class _EvaluationsListState extends State<_EvaluationsList> with AutomaticKeepAl
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.poppins(fontSize: 10.sp, color: const Color(0xFF94A3B8))),
+        Text(context.tr(label), style: GoogleFonts.poppins(fontSize: 10.sp, color: const Color(0xFF94A3B8))),
         SizedBox(height: 2.h),
-        Text(value, style: GoogleFonts.poppins(fontSize: 13.sp, fontWeight: FontWeight.w600, color: _textMuted)),
+        Text(context.tr(value), style: GoogleFonts.poppins(fontSize: 13.sp, fontWeight: FontWeight.w600, color: _textMuted)),
       ],
     );
   }
@@ -407,7 +408,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
       if (field.key == null || !_isVisible(field)) continue;
       final value = _answers[field.key!]?.trim() ?? '';
       if (value.isEmpty) {
-        if (field.required) missing.add(field.labelEn ?? field.key!);
+        if (field.required) missing.add(context.localized(field.labelEn, field.labelAr, field.key!));
         continue;
       }
       answers.add({'field': field.key!, 'value': value});
@@ -442,7 +443,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp)),
+        content: Text(context.tr(message), style: GoogleFonts.poppins(color: Colors.white, fontSize: 14.sp)),
         backgroundColor: _primary,
       ),
     );
@@ -477,7 +478,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                   _dropdown<String>(
                     value: _form,
                     items: StaffEvaluationProvider.allForms
-                        .map((f) => _menuItem<String>(f, StaffEvaluationProvider.formLabel(f)))
+                        .map((f) => _menuItem<String>(f, context.tr(StaffEvaluationProvider.formLabel(f))))
                         .toList(),
                     onChanged: (v) {
                       if (v == null || v == _form) return;
@@ -496,7 +497,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                     controller: _searchController,
                     onChanged: _onSearchChanged,
                     style: GoogleFonts.poppins(fontSize: 13.sp),
-                    decoration: _inputDecoration('Search by name or code').copyWith(
+                    decoration: _inputDecoration(context.tr('Search by name or code')).copyWith(
                       prefixIcon: Icon(Icons.search, size: 20.r, color: Colors.grey),
                     ),
                   ),
@@ -504,10 +505,10 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                   _dropdown<num?>(
                     value: selectedInList ? _employeeId : null,
                     items: [
-                      _menuItem<num?>(null, provider.isEvaluateesLoading ? 'Loading...' : '-- Select staff member --'),
+                      _menuItem<num?>(null, context.tr(provider.isEvaluateesLoading ? 'Loading...' : '-- Select staff member --')),
                       ...evaluatees.map((e) => _menuItem<num?>(
-                            e.employeeId,
-                            '${e.name ?? ''}${e.empCode != null ? ' (${e.empCode})' : ''}',
+                            e.employeeId,context.tr(
+                            '${e.name ?? ''}${e.empCode != null ? ' (${e.empCode})' : ''}'),
                           )),
                     ],
                     onChanged: (v) => setState(() => _employeeId = v),
@@ -531,8 +532,8 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                   _dropdown<num?>(
                     value: provider.semesters.any((s) => s.id == _semesterId) ? _semesterId : null,
                     items: [
-                      if (provider.semesters.isEmpty) _menuItem<num?>(null, '-- No semesters --'),
-                      ...provider.semesters.map((s) => _menuItem<num?>(s.id, s.label ?? '')),
+                      if (provider.semesters.isEmpty) _menuItem<num?>(null, context.tr('-- No semesters --')),
+                      ...provider.semesters.map((s) => _menuItem<num?>(s.id, context.tr(s.label ?? ''))),
                     ],
                     onChanged: (v) => setState(() => _semesterId = v),
                   ),
@@ -542,8 +543,8 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                     _dropdown<num?>(
                       value: _committeeId,
                       items: [
-                        _menuItem<num?>(null, '-- Select committee --'),
-                        ...provider.committees.map((c) => _menuItem<num?>(c.id, c.nameEn ?? c.nameAr ?? '')),
+                        _menuItem<num?>(null, context.tr('-- Select committee --')),
+                        ...provider.committees.map((c) => _menuItem<num?>(c.id, context.tr(context.localized(c.nameEn, c.nameAr)))),
                       ],
                       onChanged: (v) => setState(() => _committeeId = v),
                     ),
@@ -554,10 +555,10 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                     _dropdown<num?>(
                       value: _qualityStandardId,
                       items: [
-                        _menuItem<num?>(null, '-- Select quality standard --'),
+                        _menuItem<num?>(null, context.tr('-- Select quality standard --')),
                         ...provider.qualityStandards.map((q) => _menuItem<num?>(
-                              q.id,
-                              '${q.number != null ? '${q.number}. ' : ''}${q.nameEn ?? q.nameAr ?? ''}',
+                              q.id,context.tr(
+                              '${q.number != null ? '${q.number}. ' : ''}${context.localized(q.nameEn, q.nameAr)}'),
                             )),
                       ],
                       onChanged: (v) => setState(() => _qualityStandardId = v),
@@ -573,7 +574,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                   padding: EdgeInsets.symmetric(vertical: 25.h),
                   child: Center(
                     child: Text(
-                      'Could not load the questions for this form.',
+                      context.tr('Could not load the questions for this form.'),
                       style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey),
                     ),
                   ),
@@ -613,7 +614,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                   ),
-                  child: Text('Cancel', style: GoogleFonts.poppins(fontSize: 13.sp)),
+                  child: Text(context.tr('Cancel'), style: GoogleFonts.poppins(fontSize: 13.sp)),
                 ),
                 SizedBox(width: 10.w),
                 ElevatedButton.icon(
@@ -621,7 +622,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                   icon: provider.isSaving
                       ? SizedBox(width: 16.r, height: 16.r, child: const CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                       : Icon(Icons.check, size: 18.r),
-                  label: Text('Save', style: GoogleFonts.poppins(fontSize: 13.sp)),
+                  label: Text(context.tr('Save'), style: GoogleFonts.poppins(fontSize: 13.sp)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _primary,
                     foregroundColor: Colors.white,
@@ -639,7 +640,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
 
   Widget _buildField(EvaluationField field) {
     final key = field.key ?? '';
-    final label = field.labelEn ?? field.labelAr ?? key;
+    final label = context.localized(field.labelEn, field.labelAr, key);
     final value = _answers[key];
 
     Widget input;
@@ -669,7 +670,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
                     ),
                     SizedBox(width: 6.w),
                     Text(
-                      option.labelEn ?? option.labelAr ?? option.code ?? '',
+                      context.tr(context.localized(option.labelEn, option.labelAr, option.code ?? '')),
                       style: GoogleFonts.poppins(fontSize: 12.sp, color: selected ? _primary : _textMuted),
                     ),
                   ],
@@ -717,7 +718,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
           initialValue: value,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           style: GoogleFonts.poppins(fontSize: 13.sp),
-          decoration: _inputDecoration(''),
+          decoration: _inputDecoration(context.tr('')),
           onChanged: (v) => setState(() => _answers[key] = v),
         );
         break;
@@ -728,7 +729,7 @@ class _NewEvaluationFormState extends State<_NewEvaluationForm> with AutomaticKe
           minLines: 2,
           maxLines: 4,
           style: GoogleFonts.poppins(fontSize: 13.sp),
-          decoration: _inputDecoration(''),
+          decoration: _inputDecoration(context.tr('')),
           onChanged: (v) => setState(() => _answers[key] = v),
         );
     }
