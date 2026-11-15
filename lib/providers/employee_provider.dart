@@ -18,6 +18,8 @@ class EmployeeProvider with ChangeNotifier {
   List<AbsenceRequest> _absenceRequests = [];
   bool _isAbsenceLoading = false;
   String? _absenceError;
+  List<AbsenceRequest> _pendingRequests = [];
+  bool _isPendingLoading = false;
   
   // Employees list state
   List<EmployeeData> _employeesList = [];
@@ -63,6 +65,10 @@ class EmployeeProvider with ChangeNotifier {
   bool get isAbsenceLoading => _isAbsenceLoading;
 
   String? get absenceError => _absenceError;
+
+  List<AbsenceRequest> get pendingRequests => _pendingRequests;
+
+  bool get isPendingLoading => _isPendingLoading;
 
   // Employees list getters
   List<EmployeeData> get employeesList => _employeesList;
@@ -130,7 +136,7 @@ class EmployeeProvider with ChangeNotifier {
 
     try {
       final list = await ApiManager.getMyAbsenceRequests();
-      _absenceRequests = list;
+      _absenceRequests = list.where((r) => r.status?.toUpperCase() != 'CANCELLED').toList();
       _absenceError = null;
     } catch (e) {
       _absenceError = 'Failed to load leave requests: $e';
@@ -178,11 +184,49 @@ class EmployeeProvider with ChangeNotifier {
     return result;
   }
 
+  Future<Map<String, dynamic>> submitAbsenceRequest(num id) async {
+    final result = await ApiManager.submitAbsenceRequest(id);
+    if (result['success']) {
+      await fetchMyAbsenceRequests();
+    }
+    return result;
+  }
+
+  Future<Map<String, dynamic>> requestEarlyReturn(num id, String returnDate) async {
+    final result = await ApiManager.requestEarlyReturn(id, returnDate);
+    if (result['success']) {
+      await fetchMyAbsenceRequests();
+    }
+    return result;
+  }
+
+  Future<void> fetchPendingAbsenceRequests() async {
+    _isPendingLoading = true;
+    notifyListeners();
+
+    _pendingRequests = await ApiManager.getPendingAbsenceRequests();
+    _isPendingLoading = false;
+    notifyListeners();
+  }
+
+  Future<Map<String, dynamic>> decideAbsenceRequest(num id, {required bool approve, String comment = ''}) async {
+    final result = approve
+        ? await ApiManager.approveAbsenceRequest(id, comment)
+        : await ApiManager.rejectAbsenceRequest(id, comment);
+    if (result['success']) {
+      _pendingRequests.removeWhere((item) => item.id == id);
+      notifyListeners();
+      await fetchPendingAbsenceRequests();
+    }
+    return result;
+  }
+
   void clearEmployeeData() {
     _employeeData = null;
     _educationHistory = [];
     _positionHistory = [];
     _absenceRequests = [];
+    _pendingRequests = [];
     _errorMessage = null;
     _absenceError = null;
     _status = EmployeeStatus.initial;

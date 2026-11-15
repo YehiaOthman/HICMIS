@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:backtotrack/providers/employee_provider.dart';
 import 'package:backtotrack/providers/auth_provider.dart';
 import 'package:backtotrack/screens/home/widgets/new_leave_request_dialog.dart';
+import 'package:backtotrack/screens/home/widgets/early_return_dialog.dart';
+import 'package:backtotrack/data/models/absence_request.dart';
 import 'widgets/leave_request_card.dart';
 import 'widgets/app_drawer.dart';
 
@@ -21,10 +23,68 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
-      employeeProvider.fetchMyAbsenceRequests();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _refresh());
+  }
+
+  Future<void> _refresh() async {
+    final employeeProvider = Provider.of<EmployeeProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    await Future.wait([
+      employeeProvider.fetchMyAbsenceRequests(),
+      if (authProvider.isHR || authProvider.isManager) employeeProvider.fetchPendingAbsenceRequests(),
+    ]);
+  }
+
+  void _showDecisionDialog(BuildContext context, num id, {required bool approve}) {
+    final commentController = TextEditingController();
+    final color = approve ? const Color(0xFF22C55E) : const Color(0xFFEF4444);
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        title: Text(
+          approve ? 'Approve Leave Request' : 'Reject Leave Request',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18.sp),
+        ),
+        content: TextField(
+          controller: commentController,
+          maxLines: 3,
+          style: GoogleFonts.poppins(fontSize: 14.sp),
+          decoration: InputDecoration(
+            hintText: 'Comment (optional)',
+            hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text('Cancel', style: GoogleFonts.poppins(color: const Color(0xFF64748B), fontSize: 14.sp)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final comment = commentController.text.trim();
+              Navigator.pop(dialogContext);
+              final messenger = ScaffoldMessenger.of(context);
+              final res = await Provider.of<EmployeeProvider>(context, listen: false)
+                  .decideAbsenceRequest(id, approve: approve, comment: comment);
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(res['message'] ?? '', style: GoogleFonts.poppins(fontSize: 14.sp)),
+                  backgroundColor: res['success'] ? const Color(0xFF22C55E) : Colors.redAccent,
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+            ),
+            child: Text(approve ? 'Approve' : 'Reject', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+          ),
+        ],
+      ),
+    );
   }
 
   void _confirmDelete(BuildContext context, num id) {
@@ -65,12 +125,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _submitRequest(BuildContext context, num id) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final res = await Provider.of<EmployeeProvider>(context, listen: false).submitAbsenceRequest(id);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(res['message'] ?? '', style: GoogleFonts.poppins(fontSize: 14.sp)),
+        backgroundColor: res['success'] ? const Color(0xFF22C55E) : Colors.redAccent,
+      ),
+    );
+  }
+
+  bool _canRequestEarlyReturn(AbsenceRequest req, List<AbsenceRequest> all) {
+    if (req.id == null || req.status?.toUpperCase() != 'APPROVED' || req.parentAbsenceId != null) {
+      return false;
+    }
+    final start = DateTime.tryParse(req.startDate ?? '');
+    final end = DateTime.tryParse(req.endDate ?? '');
+    if (start == null || end == null || !end.isAfter(start)) return false;
+    return !all.any((r) => r.parentAbsenceId == req.id && r.status?.toUpperCase() != 'REJECTED');
+  }
+
   Color _getStatusColor(String? status) {
     switch (status?.toLowerCase()) {
       case 'approved':
         return const Color(0xFF22C55E);
       case 'rejected':
         return const Color(0xFFEF4444);
+      case 'draft':
+      case 'cancelled':
+        return const Color(0xFF64748B);
       case 'pending':
       default:
         return const Color(0xFFF59E0B);
@@ -110,9 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              Provider.of<EmployeeProvider>(context, listen: false).fetchMyAbsenceRequests();
-            },
+            onPressed: _refresh,
             icon: Icon(Icons.refresh, color: Colors.black, size: 22.r),
           ),
           IconButton(onPressed: () {}, icon: Icon(Icons.notifications_none, size: 22.r)),
@@ -133,10 +215,11 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, employeeProvider, authProvider, child) {
           final requests = employeeProvider.absenceRequests;
           final isHR = authProvider.isHR || authProvider.isManager;
-          final pendingRequests = requests.where((req) => req.status?.toLowerCase() == 'pending').toList();
+          final pendingRequests = employeeProvider.pendingRequests;
+          final isPendingTab = isHR && _selectedTabIndex == 1;
 
           return RefreshIndicator(
-            onRefresh: () => employeeProvider.fetchMyAbsenceRequests(),
+            onRefresh: _refresh,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.all(20.r),
@@ -243,7 +326,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 20.h),
 
-                  if (employeeProvider.isAbsenceLoading && requests.isEmpty)
+                  if (isPendingTab
+                      ? employeeProvider.isPendingLoading && pendingRequests.isEmpty
+                      : employeeProvider.isAbsenceLoading && requests.isEmpty)
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 40.h),
                       child: const Center(
@@ -288,7 +373,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         status: req.status ?? 'PENDING',
                         statusColor: _getStatusColor(req.status),
                         icon: _getAbsenceIcon(req.absenceType),
+                        breakFromDate: req.breakFromDate,
+                        approvalSteps: req.approvalSteps,
+                        employeeName: isPendingTab ? req.employeeName : null,
+                        onApprove: isPendingTab && req.id != null
+                            ? () => _showDecisionDialog(context, req.id!, approve: true)
+                            : null,
+                        onReject: isPendingTab && req.id != null
+                            ? () => _showDecisionDialog(context, req.id!, approve: false)
+                            : null,
                         onDelete: req.id != null && _selectedTabIndex == 0 ? () => _confirmDelete(context, req.id!) : null,
+                        onSubmit: req.id != null && _selectedTabIndex == 0 && req.status?.toUpperCase() == 'DRAFT'
+                            ? () => _submitRequest(context, req.id!)
+                            : null,
+                        onEarlyReturn: _selectedTabIndex == 0 && _canRequestEarlyReturn(req, requests)
+                            ? () => showDialog(
+                                  context: context,
+                                  builder: (_) => EarlyReturnDialog(request: req),
+                                )
+                            : null,
                       ),
                     ),
                 ],

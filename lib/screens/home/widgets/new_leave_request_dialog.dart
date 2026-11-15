@@ -108,7 +108,7 @@ class _NewLeaveRequestDialogState extends State<NewLeaveRequestDialog> {
       if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result['message'] ?? 'Leave request submitted successfully!', style: GoogleFonts.poppins(fontSize: 14.sp)),
+            content: Text(result['message'] ?? 'Leave request saved as draft', style: GoogleFonts.poppins(fontSize: 14.sp)),
             backgroundColor: const Color(0xFF22C55E),
           ),
         );

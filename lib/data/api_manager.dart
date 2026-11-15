@@ -410,7 +410,7 @@ class ApiManager {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return {
           'success': true,
-          'message': 'Leave request created successfully',
+          'message': 'Leave request saved as draft',
           'data': data,
         };
       } else {
@@ -1015,6 +1015,88 @@ class ApiManager {
       } else if (details is Map && details.isNotEmpty) {
         msg += '\n${details.entries.map((e) => '${e.key}: ${e.value}').join('\n')}';
       }
+      return {'success': false, 'message': msg};
+    } catch (e) {
+      return {'success': false, 'message': 'Connection error: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> submitAbsenceRequest(num id) {
+    return _postAbsenceAction(
+      '$absenceRequestsPath/$id/submit',
+      null,
+      'Leave request submitted for approval',
+    );
+  }
+
+  static Future<List<AbsenceRequest>> getPendingAbsenceRequests() async {
+    Uri url = Uri.https(baseUrl, '$absenceRequestsPath/pending');
+
+    try {
+      final response = await _sendAuthorized((headers) => http.get(url, headers: headers));
+      if (response == null || response.statusCode != 200) return [];
+
+      final data = jsonDecode(response.body);
+      final List rawList = data is List ? data : (data is Map && data['data'] is List ? data['data'] : []);
+      return rawList.map((item) => AbsenceRequest.fromJson(item)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> approveAbsenceRequest(num id, String comment) {
+    return _postAbsenceAction(
+      '$absenceRequestsPath/$id/approve',
+      {if (comment.isNotEmpty) 'comment': comment},
+      'Leave request approved',
+    );
+  }
+
+  static Future<Map<String, dynamic>> rejectAbsenceRequest(num id, String comment) {
+    return _postAbsenceAction(
+      '$absenceRequestsPath/$id/reject',
+      {if (comment.isNotEmpty) 'comment': comment},
+      'Leave request rejected',
+    );
+  }
+
+  static Future<Map<String, dynamic>> requestEarlyReturn(num id, String breakFromDate) {
+    return _postAbsenceAction(
+      '$absenceRequestsPath/$id/break',
+      {'breakFromDate': breakFromDate},
+      'Early return request saved as draft',
+    );
+  }
+
+  static Future<Map<String, dynamic>> _postAbsenceAction(
+    String path,
+    Map<String, dynamic>? body,
+    String successMessage,
+  ) async {
+    Uri url = Uri.https(baseUrl, path);
+
+    try {
+      final response = await _sendAuthorized(
+        (headers) => http.post(url, headers: headers, body: body == null ? null : jsonEncode(body)),
+      );
+      if (response == null) {
+        return {'success': false, 'message': 'No authentication token found. Please sign in again.'};
+      }
+
+      dynamic data;
+      try {
+        data = jsonDecode(response.body);
+      } catch (_) {
+        data = null;
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return {'success': true, 'message': successMessage, 'data': data};
+      }
+
+      final msg = (data is Map && data['message'] != null)
+          ? data['message'].toString()
+          : 'Request failed (${response.statusCode})';
       return {'success': false, 'message': msg};
     } catch (e) {
       return {'success': false, 'message': 'Connection error: $e'};
