@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:backtotrack/l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AuthHeader extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
+  final Color boxColor;
 
   const AuthHeader({
     super.key,
     required this.icon,
     required this.title,
-    required this.subtitle, required Color boxColor,
+    required this.subtitle,
+    this.boxColor = const Color(0xFF2353D0),
   });
 
   @override
@@ -18,31 +22,30 @@ class AuthHeader extends StatelessWidget {
     return Column(
       children: [
         Container(
-          height: 80,
-          width: 80,
+          height: 80.r,
+          width: 80.r,
           decoration: BoxDecoration(
-            color: Color(0xFF2353D0),
-            borderRadius: BorderRadius.circular(20),
+            color: boxColor,
+            borderRadius: BorderRadius.circular(20.r),
           ),
-          child: Icon(icon, color: Colors.white, size: 40),
+          child: Icon(icon, color: Colors.white, size: 40.r),
         ),
-        const SizedBox(height: 25),
-        // Title text
+        SizedBox(height: 25.h),
         Text(
-          title,
+          context.tr(title),
+          textAlign: TextAlign.center,
           style: GoogleFonts.poppins(
-            fontSize: 24,
+            fontSize: 24.sp,
             fontWeight: FontWeight.bold,
             color: const Color(0xFF1E293B),
           ),
         ),
-        const SizedBox(height: 8),
-        // Subtitle text
+        SizedBox(height: 8.h),
         Text(
-          subtitle,
+          context.tr(subtitle),
           textAlign: TextAlign.center,
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             color: Colors.grey[500],
           ),
         ),
